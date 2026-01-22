@@ -1,0 +1,1736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MultiConnect Earning Program</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5a67d8;
+            --secondary: #764ba2;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --gray: #6b7280;
+            --gray-light: #e5e7eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+        }
+
+        /* Hide elements */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--gray-light);
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Login Page */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--gray-light);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .support-info {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--gray-light);
+        }
+
+        .support-contact {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: var(--light);
+            border-radius: 8px;
+            color: var(--dark);
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .contact-item:hover {
+            background: var(--gray-light);
+        }
+
+        /* Dashboard */
+        .dashboard {
+            min-height: 100vh;
+            background: var(--light);
+        }
+
+        .dashboard-header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .header-left .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--primary);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .dashboard-content {
+            padding: 30px 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .welcome-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .welcome-text h1 {
+            font-size: 28px;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .welcome-text p {
+            color: var(--gray);
+        }
+
+        .referral-box {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            min-width: 250px;
+        }
+
+        .referral-code {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 10px 0;
+            letter-spacing: 2px;
+        }
+
+        .copy-btn {
+            background: var(--light);
+            border: 2px solid var(--gray-light);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 auto;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: var(--gray-light);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-card.earnings .stat-value {
+            color: var(--success);
+        }
+
+        .stat-card.balance .stat-value {
+            color: var(--primary);
+        }
+
+        .stat-card.team .stat-value {
+            color: var(--secondary);
+        }
+
+        .stat-card.withdrawal .stat-value {
+            color: var(--warning);
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .stat-icon.earnings {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .stat-icon.balance {
+            background: rgba(102, 126, 234, 0.1);
+            color: var(--primary);
+        }
+
+        .stat-icon.team {
+            background: rgba(118, 75, 162, 0.1);
+            color: var(--secondary);
+        }
+
+        .stat-icon.withdrawal {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        /* Referral Message Section */
+        .referral-message-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .countdown-timer {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .timer-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #92400E;
+            margin-bottom: 10px;
+        }
+
+        .timer-display {
+            font-size: 24px;
+            font-weight: 700;
+            color: #92400E;
+            font-family: monospace;
+        }
+
+        .progress-container {
+            margin: 20px 0;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: var(--gray-light);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, var(--success) 0%, #34d399 100%);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        /* Earnings Breakdown */
+        .earnings-breakdown {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .breakdown-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .breakdown-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .breakdown-item {
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .breakdown-item.level1 {
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid var(--success);
+        }
+
+        .breakdown-item.level2 {
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid var(--primary);
+        }
+
+        .breakdown-item.level3 {
+            background: rgba(118, 75, 162, 0.1);
+            border: 2px solid var(--secondary);
+        }
+
+        .breakdown-item.total {
+            background: rgba(245, 158, 11, 0.1);
+            border: 2px solid var(--warning);
+        }
+
+        .breakdown-label {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 8px;
+        }
+
+        .breakdown-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .breakdown-item.level1 .breakdown-value {
+            color: var(--success);
+        }
+
+        .breakdown-item.level2 .breakdown-value {
+            color: var(--primary);
+        }
+
+        .breakdown-item.level3 .breakdown-value {
+            color: var(--secondary);
+        }
+
+        .breakdown-item.total .breakdown-value {
+            color: var(--warning);
+        }
+
+        /* Details Grid */
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .detail-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .detail-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: var(--gray);
+        }
+
+        .detail-value {
+            font-weight: 500;
+        }
+
+        .detail-value.positive {
+            color: var(--success);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        /* WhatsApp Float */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: #25D366;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+            z-index: 100;
+            transition: all 0.3s;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--dark);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .message-preview {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 14px;
+        }
+
+        .share-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 500;
+            z-index: 1001;
+            animation: slideIn 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notification.success {
+            background: var(--success);
+        }
+
+        .notification.error {
+            background: var(--danger);
+        }
+
+        .notification.warning {
+            background: var(--warning);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .login-card {
+                padding: 30px 20px;
+            }
+            
+            .welcome-section {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+            
+            .whatsapp-float {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay hidden" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div id="loadingMessage">Loading your account...</div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer"></div>
+
+    <!-- WhatsApp Float -->
+    <a href="https://wa.me/919985943961" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Login Page -->
+    <div class="login-container" id="loginPage">
+        <div class="login-card">
+            <div class="login-logo">
+                <i class="fas fa-network-wired"></i>
+                <span>MultiConnect</span>
+            </div>
+            <div id="loginError" class="notification error hidden" style="position: relative; top: 0; right: 0; margin-bottom: 20px;"></div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginMethod">Login Method</label>
+                    <select id="loginMethod" class="form-control" onchange="toggleLoginMethod()">
+                        <option value="phone">Phone Number</option>
+                        <option value="referral">Referral Code</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="phoneField">
+                    <label for="phoneNumber">Phone Number</label>
+                    <input type="tel" id="phoneNumber" class="form-control" placeholder="Enter your phone number" pattern="[0-9]{10}" required>
+                </div>
+                
+                <div class="form-group hidden" id="referralField">
+                    <label for="referralCode">Referral Code</label>
+                    <input type="text" id="referralCode" class="form-control" placeholder="Enter your referral code">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
+                </div>
+                
+                <button type="button" class="btn btn-primary" onclick="login()">
+                    <i class="fas fa-sign-in-alt"></i> Login to Account
+                </button>
+            </form>
+
+            <div class="support-info">
+                <p><i class="fas fa-headset"></i> Need help? Contact support:</p>
+                <div class="support-contact">
+                    <a href="https://wa.me/919985943961" class="contact-item" target="_blank">
+                        <i class="fab fa-whatsapp"></i> WhatsApp Support
+                    </a>
+                    <a href="tel:+919985943961" class="contact-item">
+                        <i class="fas fa-phone"></i> Call: +91 9985943961
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard hidden" id="dashboard">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="container">
+                <div class="header-content">
+                    <div class="header-left">
+                        <div class="logo">
+                            <i class="fas fa-network-wired"></i>
+                            <span>MultiConnect</span>
+                        </div>
+                    </div>
+                    <div class="header-right">
+                        <div class="user-info">
+                            <div class="user-avatar" id="userAvatar">U</div>
+                            <div>
+                                <div style="font-weight: 600;" id="userName">User</div>
+                                <div style="font-size: 12px; color: var(--gray);" id="userReferralCode">REFCODE</div>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline" onclick="logout()" style="padding: 8px 16px;">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="dashboard-content">
+            <div class="container">
+                <!-- Welcome Section -->
+                <div class="welcome-section">
+                    <div class="welcome-text">
+                        <h1>Welcome back, <span id="welcomeName">User</span>! 👋</h1>
+                        <p>Your MultiConnect account dashboard. Track earnings, team growth, and manage your account.</p>
+                    </div>
+                    <div class="referral-box">
+                        <div style="font-size: 14px; opacity: 0.9;">Your Referral Code</div>
+                        <div class="referral-code" id="dashboardReferralCode">REFCODE</div>
+                        <button class="copy-btn" onclick="copyReferralCode()">
+                            <i class="fas fa-copy"></i> Copy Code
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card earnings">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-value" id="totalEarnings">₹0</div>
+                                <div class="stat-label">Total Earnings</div>
+                            </div>
+                            <div class="stat-icon earnings">
+                                <i class="fas fa-rupee-sign"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card balance">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-value" id="accountBalance">₹0</div>
+                                <div class="stat-label">Account Balance</div>
+                            </div>
+                            <div class="stat-icon balance">
+                                <i class="fas fa-wallet"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card team">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-value" id="teamMembers">0</div>
+                                <div class="stat-label">Team Members</div>
+                            </div>
+                            <div class="stat-icon team">
+                                <i class="fas fa-users"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card withdrawal">
+                        <div class="stat-header">
+                            <div>
+                                <div class="stat-value" id="totalWithdrawal">₹0</div>
+                                <div class="stat-label">Total Withdrawal</div>
+                            </div>
+                            <div class="stat-icon withdrawal">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New Features Section -->
+                <div class="referral-message-section">
+                    <h3><i class="fas fa-bullhorn"></i> Invite Friends & Earn</h3>
+                    <p style="margin-bottom: 20px; color: var(--gray);">
+                        Share your referral message and earn commission from 3 levels! 🚀
+                    </p>
+
+                    <!-- Special Offer Countdown -->
+                    <div class="countdown-timer">
+                        <div class="timer-title">⏰ LIMITED TIME OFFER</div>
+                        <div class="timer-display" id="countdownTimer">23:59:59</div>
+                        <div style="font-size: 12px; color: #92400E; margin-top: 8px;">
+                            Join 5 members in 1 week & get your money back!
+                        </div>
+                    </div>
+
+                    <!-- Referral Progress -->
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>Weekly Referral Target</span>
+                            <span><span id="currentReferrals">0</span>/5 members</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="referralProgress" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-success" onclick="showReferralMessage()" style="margin-top: 20px; width: 100%;">
+                        <i class="fas fa-share-alt"></i> Share Referral Message
+                    </button>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <button class="btn btn-primary" onclick="showReferralMessage()">
+                        <i class="fas fa-share-alt"></i> Invite Friends
+                    </button>
+                    <button class="btn btn-secondary" onclick="showWithdrawalModal()">
+                        <i class="fas fa-wallet"></i> Withdraw Money
+                    </button>
+                    <button class="btn btn-warning" onclick="showTeamModal()">
+                        <i class="fas fa-users"></i> View Team
+                    </button>
+                    <button class="btn btn-success" onclick="checkDailyBonus()">
+                        <i class="fas fa-gift"></i> Daily Bonus
+                    </button>
+                </div>
+
+                <!-- Earnings Breakdown -->
+                <div class="earnings-breakdown">
+                    <div class="breakdown-header">
+                        <h3><i class="fas fa-chart-pie"></i> Earnings Breakdown</h3>
+                        <button class="btn btn-outline" style="padding: 8px 16px;" onclick="explainEarningPlan()">
+                            <i class="fas fa-info-circle"></i> How It Works
+                        </button>
+                    </div>
+                    <div class="breakdown-grid">
+                        <div class="breakdown-item level1">
+                            <div class="breakdown-label">Level 1 Earnings</div>
+                            <div class="breakdown-value" id="level1Earnings">₹0</div>
+                            <div style="font-size: 12px;">₹100 per referral</div>
+                        </div>
+                        <div class="breakdown-item level2">
+                            <div class="breakdown-label">Level 2 Earnings</div>
+                            <div class="breakdown-value" id="level2Earnings">₹0</div>
+                            <div style="font-size: 12px;">₹50 per referral</div>
+                        </div>
+                        <div class="breakdown-item level3">
+                            <div class="breakdown-label">Level 3 Earnings</div>
+                            <div class="breakdown-value" id="level3Earnings">₹0</div>
+                            <div style="font-size: 12px;">₹50 per referral</div>
+                        </div>
+                        <div class="breakdown-item total">
+                            <div class="breakdown-label">Total Earnings</div>
+                            <div class="breakdown-value" id="totalEarningsBreakdown">₹0</div>
+                            <div style="font-size: 12px; opacity: 0.9;">Join 10 members earn ₹1000</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Details Grid -->
+                <div class="details-grid">
+                    <!-- Account Details -->
+                    <div class="detail-card">
+                        <h3><i class="fas fa-user-circle"></i> Account Details</h3>
+                        <div class="detail-item">
+                            <span class="detail-label">Name</span>
+                            <span class="detail-value" id="detailName">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Phone Number</span>
+                            <span class="detail-value" id="detailPhone">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Referral Code</span>
+                            <span class="detail-value" id="detailReferralCode">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Referred By</span>
+                            <span class="detail-value" id="detailReferredBy">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Team Name</span>
+                            <span class="detail-value" id="detailTeamName">-</span>
+                        </div>
+                    </div>
+
+                    <!-- Financial Details -->
+                    <div class="detail-card">
+                        <h3><i class="fas fa-money-bill-wave"></i> Financial Details</h3>
+                        <div class="detail-item">
+                            <span class="detail-label">Initial Deposit</span>
+                            <span class="detail-value" id="detailDeposit">₹0</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Bonuses</span>
+                            <span class="detail-value" id="detailBonuses">₹0</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Payment Date</span>
+                            <span class="detail-value" id="detailPaymentDate">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Earnings</span>
+                            <span class="detail-value positive" id="detailEarnings">₹0</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Account Balance</span>
+                            <span class="detail-value positive" id="detailAccountBalance">₹0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="shareAccountDetails()">
+                        <i class="fab fa-whatsapp"></i> Share on WhatsApp
+                    </button>
+                    <button class="btn btn-secondary" onclick="showWithdrawalModal()">
+                        <i class="fas fa-wallet"></i> Request Withdrawal
+                    </button>
+                    <button class="btn btn-outline" onclick="downloadStatement()">
+                        <i class="fas fa-download"></i> Download Statement
+                    </button>
+                    <button class="btn btn-outline" onclick="contactSupport()">
+                        <i class="fas fa-headset"></i> Contact Support
+                    </button>
+                </div>
+
+                <!-- Support Info -->
+                <div class="support-info">
+                    <p><i class="fas fa-info-circle"></i> Need assistance with your account?</p>
+                    <div class="support-contact">
+                        <a href="tel:+919985943961" class="contact-item">
+                            <i class="fas fa-phone"></i> Call Support: +91 9985943961
+                        </a>
+                        <a href="https://wa.me/919985943961" class="contact-item" target="_blank">
+                            <i class="fab fa-whatsapp"></i> WhatsApp Support
+                        </a>
+                        <a href="mailto:earningsprogram777@gmail.com" class="contact-item">
+                            <i class="fas fa-envelope"></i> Email Support
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Referral Message Modal -->
+    <div class="modal" id="referralMessageModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-share-alt"></i> Share Referral Message</h3>
+                <button class="close-btn" onclick="closeModal('referralMessageModal')">&times;</button>
+            </div>
+            <p style="margin-bottom: 16px; color: var(--gray);">Copy and share this message with your friends:</p>
+            <div class="message-preview" id="referralMessagePreview">
+                Loading message...
+            </div>
+            <div class="share-options">
+                <button class="btn btn-success share-btn" onclick="shareViaWhatsApp()">
+                    <i class="fab fa-whatsapp"></i> WhatsApp
+                </button>
+                <button class="btn btn-primary share-btn" onclick="shareViaTelegram()">
+                    <i class="fab fa-telegram"></i> Telegram
+                </button>
+                <button class="btn btn-outline share-btn" onclick="copyReferralMessage()">
+                    <i class="fas fa-copy"></i> Copy Message
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Withdrawal Modal -->
+    <div class="modal" id="withdrawalModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-wallet"></i> Request Withdrawal</h3>
+                <button class="close-btn" onclick="closeModal('withdrawalModal')">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="withdrawalAmount">Amount to Withdraw</label>
+                <input type="number" id="withdrawalAmount" class="form-control" placeholder="Enter amount" min="100" max="100000">
+                <small style="color: var(--gray);">Minimum withdrawal: ₹100</small>
+            </div>
+            <div class="form-group">
+                <label for="bankDetails">Bank Details</label>
+                <textarea id="bankDetails" class="form-control" rows="3" placeholder="Account Number, IFSC, Name"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="upiId">UPI ID (Optional)</label>
+                <input type="text" id="upiId" class="form-control" placeholder="Enter your UPI ID">
+            </div>
+            <button class="btn btn-primary" onclick="submitWithdrawalRequest()">
+                <i class="fas fa-paper-plane"></i> Submit Request
+            </button>
+        </div>
+    </div>
+
+    <!-- Team Members Modal -->
+    <div class="modal" id="teamModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-users"></i> Team Members</h3>
+                <button class="close-btn" onclick="closeModal('teamModal')">&times;</button>
+            </div>
+            <div id="teamMembersList">
+                Loading team members...
+            </div>
+        </div>
+    </div>
+
+    <!-- Earning Plan Explanation Modal -->
+    <div class="modal" id="earningPlanModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-info-circle"></i> MultiConnect Earning Plan</h3>
+                <button class="close-btn" onclick="closeModal('earningPlanModal')">&times;</button>
+            </div>
+            <div style="max-height: 400px; overflow-y: auto;">
+                <h4>📊 3-Level Referral System:</h4>
+                <ul style="margin-left: 20px; margin-bottom: 20px;">
+                    <li><strong>Level 1:</strong> Earn ₹100 for each direct referral</li>
+                    <li><strong>Level 2:</strong> Earn ₹50 for each referral by your team</li>
+                    <li><strong>Level 3:</strong> Earn ₹50 for each referral by level 2 team</li>
+                </ul>
+
+                <h4>💰 Example Calculation:</h4>
+                <div style="background: var(--light); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                    <p>If you refer 5 people (Level 1), and each refers 3 people (Level 2), and each of those refers 2 people (Level 3):</p>
+                    <ul style="margin-left: 20px;">
+                        <li>Level 1: 5 × ₹100 = ₹500</li>
+                        <li>Level 2: 15 × ₹50 = ₹750</li>
+                        <li>Level 3: 30 × ₹50 = ₹1500</li>
+                        <li><strong>Total Earnings: ₹2750</strong></li>
+                    </ul>
+                </div>
+
+                <h4>🎁 Special Offers:</h4>
+                <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 15px; border-radius: 10px;">
+                    <p><strong>🔥 Exclusive Limited-Time Offers:</strong></p>
+                    <ul style="margin-left: 20px;">
+                        <li>Join 5 members in 1 week → Get ₹299 back!</li>
+                        <li>Join 10 members → Earn ₹1000 bonus!</li>
+                    </ul>
+                </div>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="btn btn-success" onclick="closeModal('earningPlanModal'); showReferralMessage();">
+                        <i class="fas fa-share-alt"></i> Start Sharing Now!
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const GOOGLE_SHEETS_URL = 'https://docs.google.com/spreadsheets/d/1ryioJmyKvWPp7anEu2P842ZPuM5dqCMlYppjXcfzN_E/gviz/tq?tqx=out:json&gid=0';
+        let currentUser = null;
+        let allUsers = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Enter key support for login
+            document.getElementById('password').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    login();
+                }
+            });
+            
+            // Initialize countdown timer
+            startCountdown();
+        });
+
+        function toggleLoginMethod() {
+            const method = document.getElementById('loginMethod').value;
+            document.getElementById('phoneField').classList.toggle('hidden', method !== 'phone');
+            document.getElementById('referralField').classList.toggle('hidden', method !== 'referral');
+            
+            if (method === 'referral') {
+                document.getElementById('referralCode').focus();
+            }
+        }
+
+        async function fetchSheetData() {
+            try {
+                showLoading('Fetching data from Google Sheets...');
+                const response = await fetch(GOOGLE_SHEETS_URL);
+                const text = await response.text();
+                
+                // Remove the wrapper text from Google Sheets API
+                const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+                const jsonData = JSON.parse(jsonText);
+                
+                // Map columns based on your sheet structure
+                allUsers = jsonData.table.rows.map(row => {
+                    const cells = row.c;
+                    return {
+                        name: cells[0]?.v || '',
+                        phone: cells[1]?.v?.toString() || '',
+                        password: cells[2]?.v?.toString() || '', // Password column
+                        referralCode: cells[3]?.v || '',
+                        referredBy: cells[4]?.v || '',
+                        teamName: cells[5]?.v || '',
+                        totalTeam: parseInt(cells[6]?.v) || 0,
+                        bonuses: parseFloat(cells[7]?.v) || 0,
+                        deposit: parseFloat(cells[8]?.v) || 0,
+                        bonusList: cells[9]?.v || '',
+                        paymentDate: cells[10]?.v || '',
+                        earnings: parseFloat(cells[11]?.v) || 0,
+                        accountBalance: parseFloat(cells[12]?.v) || 0,
+                        totalWithdrawal: parseFloat(cells[13]?.v) || 0,
+                        withdrawalsList: cells[14]?.v || '',
+                        level1: parseFloat(cells[15]?.v) || 0,
+                        level2: parseFloat(cells[16]?.v) || 0,
+                        level3: parseFloat(cells[17]?.v) || 0,
+                        totalEarnings: parseFloat(cells[18]?.v) || 0,
+                        status: cells[19]?.v || ''
+                    };
+                });
+                
+                hideLoading();
+                return allUsers;
+            } catch (error) {
+                hideLoading();
+                console.error('Error fetching sheet data:', error);
+                showNotification('Failed to fetch data from Google Sheets. Please try again.', 'error');
+                return [];
+            }
+        }
+
+        async function login() {
+            const method = document.getElementById('loginMethod').value;
+            const phone = document.getElementById('phoneNumber').value.trim();
+            const referralCode = document.getElementById('referralCode').value.trim().toUpperCase();
+            const password = document.getElementById('password').value.trim();
+            
+            // Clear previous errors
+            hideNotification('loginError');
+            
+            // Basic validation
+            if (!password) {
+                showNotification('Password is required', 'error', 'loginError');
+                return;
+            }
+            
+            if (method === 'phone' && !phone) {
+                showNotification('Phone number is required', 'error', 'loginError');
+                return;
+            }
+            
+            if (method === 'referral' && !referralCode) {
+                showNotification('Referral code is required', 'error', 'loginError');
+                return;
+            }
+            
+            // Fetch data
+            const users = await fetchSheetData();
+            
+            if (users.length === 0) {
+                showNotification('No user data found. Please check the Google Sheet connection.', 'error', 'loginError');
+                return;
+            }
+            
+            // Find user
+            let user = null;
+            if (method === 'phone') {
+                user = users.find(u => u.phone === phone);
+            } else {
+                user = users.find(u => u.referralCode === referralCode);
+            }
+            
+            // Check password
+            if (user) {
+                // Check password (in real app, this should be secure)
+                if (user.password === password) {
+                    currentUser = user;
+                    showNotification(`Welcome back, ${user.name}!`, 'success');
+                    setTimeout(() => {
+                        showDashboard();
+                        updateDashboard(user);
+                    }, 1000);
+                } else {
+                    showNotification('Invalid password. Please try again.', 'error', 'loginError');
+                }
+            } else {
+                showNotification('User not found. Please check your credentials.', 'error', 'loginError');
+            }
+        }
+
+        function showDashboard() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+        }
+
+        function updateDashboard(user) {
+            // Update user info
+            document.getElementById('userName').textContent = user.name;
+            document.getElementById('userAvatar').textContent = user.name.charAt(0).toUpperCase();
+            document.getElementById('userReferralCode').textContent = user.referralCode;
+            document.getElementById('welcomeName').textContent = user.name;
+            document.getElementById('dashboardReferralCode').textContent = user.referralCode;
+            
+            // Update stats
+            document.getElementById('totalEarnings').textContent = formatCurrency(user.totalEarnings);
+            document.getElementById('accountBalance').textContent = formatCurrency(user.accountBalance);
+            document.getElementById('teamMembers').textContent = user.totalTeam;
+            document.getElementById('totalWithdrawal').textContent = formatCurrency(user.totalWithdrawal);
+            
+            // Update breakdown
+            document.getElementById('level1Earnings').textContent = formatCurrency(user.level1);
+            document.getElementById('level2Earnings').textContent = formatCurrency(user.level2);
+            document.getElementById('level3Earnings').textContent = formatCurrency(user.level3);
+            document.getElementById('totalEarningsBreakdown').textContent = formatCurrency(user.totalEarnings);
+            
+            // Update details
+            document.getElementById('detailName').textContent = user.name;
+            document.getElementById('detailPhone').textContent = user.phone;
+            document.getElementById('detailReferralCode').textContent = user.referralCode;
+            document.getElementById('detailReferredBy').textContent = user.referredBy || 'Direct';
+            document.getElementById('detailTeamName').textContent = user.teamName || '-';
+            document.getElementById('detailDeposit').textContent = formatCurrency(user.deposit);
+            document.getElementById('detailBonuses').textContent = formatCurrency(user.bonuses);
+            document.getElementById('detailPaymentDate').textContent = user.paymentDate || '-';
+            document.getElementById('detailEarnings').textContent = formatCurrency(user.earnings);
+            document.getElementById('detailAccountBalance').textContent = formatCurrency(user.accountBalance);
+            
+            // Update referral progress
+            const referralCount = user.totalTeam || 0;
+            const progressPercentage = Math.min(100, (referralCount / 5) * 100);
+            document.getElementById('currentReferrals').textContent = referralCount;
+            document.getElementById('referralProgress').style.width = `${progressPercentage}%`;
+            
+            // Update team members list
+            updateTeamMembersList(user.referralCode);
+        }
+
+        function updateTeamMembersList(referralCode) {
+            const teamMembers = allUsers.filter(user => user.referredBy === referralCode);
+            const teamList = document.getElementById('teamMembersList');
+            
+            if (teamMembers.length === 0) {
+                teamList.innerHTML = '<p style="text-align: center; color: var(--gray);">No team members yet.</p>';
+                return;
+            }
+            
+            teamList.innerHTML = `
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px; padding: 10px; background: var(--light); border-radius: 8px; font-weight: 600;">
+                    <span>Name</span>
+                    <span>Join Date</span>
+                    <span>Status</span>
+                </div>
+                ${teamMembers.map(member => `
+                    <div style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid var(--gray-light);">
+                        <span>${member.name}</span>
+                        <span>${member.paymentDate || '-'}</span>
+                        <span style="color: ${member.status.includes('✅') ? 'var(--success)' : 'var(--gray)'}">
+                            ${member.status || 'Active'}
+                        </span>
+                    </div>
+                `).join('')}
+                <div style="text-align: center; margin-top: 20px; padding: 15px; background: var(--light); border-radius: 10px;">
+                    <strong>Total Team Members:</strong> ${teamMembers.length}
+                </div>
+            `;
+        }
+
+        function showReferralMessage() {
+            if (!currentUser) return;
+
+            const referralMessage = `👋 Hi, I am ${currentUser.name},
+
+🎉 *Welcome to Our Earning Program!*
+
+---
+💼 *What We Offer:*
+-----------------------------
+🔹 Telecalling Jobs
+🔹 Promoting Adds
+🔹 Dynamic Daily Tasks
+🔹 *Flexible Work Hours (Work from Home!)*
+🔹 *No Prior Experience Needed*
+
+Why Join Us? 🚀
+-----------------------------
+✅ *Immediate Earning Potential: Start Earning Today!*
+✅ *Skill Development:* Enhance your communication & data handling skills.
+✅ *Transparent Payouts:* Get paid reliably.
+✅ *Dedicated Support:* We're here to guide you.
+
+💸 *How You Can Earn:*
+-----------------------------
+1. Refer friends for direct earnings.
+2. Build a team for recurring bonus income.
+3. Earn extra bonuses based on your performance.
+
+💰 *Referral Bonus Structure:*
+-----------------------------
+🥇 Level 1: *₹100 per referral*
+🥈 Level 2: *₹50 per referral*
+🥉 Level 3: *₹50 per referral*
+
+🔥 *EXCLUSIVE LIMITED-TIME OFFER!*
+-----------------------------------------
+Joining Fee: *₹299*, Earn in 3 levels
+💥 *NOW ONLY ₹0! (100% OFF - Limited Slots!) join 10 members earn ₹1000*
+
+---
+🔗 *Ready to Start?*
+Join using your Referral Code: *${currentUser.referralCode}*
+👉👉👉👉👉 Click here: https://earningsprogram777.github.io/time-pass/webpage?ref=${currentUser.referralCode}
+
+📞 Let's grow together and earn daily! Join our WhatsApp Group for tips & updates:
+https://chat.whatsapp.com/E94BX4hBsFM4GpvQx5FBEW
+
+📞 WHATSAPP CHANNEL:
+https://whatsapp.com/channel/0029VbC2lLdK0IBag1Y3WC0s
+
+*Special Offer:* Join 5 members in 1 week & get your money back! 💰
+
+Don't miss out on this opportunity! ✨`;
+
+            document.getElementById('referralMessagePreview').textContent = referralMessage;
+            openModal('referralMessageModal');
+        }
+
+        function shareViaWhatsApp() {
+            if (!currentUser) return;
+
+            const message = document.getElementById('referralMessagePreview').textContent;
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/?text=${encodedMessage}`, '_blank');
+            showNotification('Opening WhatsApp...');
+            closeModal('referralMessageModal');
+        }
+
+        function shareViaTelegram() {
+            if (!currentUser) return;
+
+            const message = document.getElementById('referralMessagePreview').textContent;
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodedMessage}`, '_blank');
+            showNotification('Opening Telegram...');
+            closeModal('referralMessageModal');
+        }
+
+        function copyReferralMessage() {
+            const message = document.getElementById('referralMessagePreview').textContent;
+            navigator.clipboard.writeText(message).then(() => {
+                showNotification('Message copied to clipboard!');
+            }).catch(err => {
+                showNotification('Failed to copy message', 'error');
+            });
+        }
+
+        function copyReferralCode() {
+            const code = document.getElementById('dashboardReferralCode').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                showNotification('Referral code copied to clipboard!');
+            }).catch(err => {
+                showNotification('Failed to copy code', 'error');
+            });
+        }
+
+        function showWithdrawalModal() {
+            if (!currentUser) return;
+
+            const balance = currentUser.accountBalance || 0;
+            if (balance < 100) {
+                showNotification('Minimum balance for withdrawal is ₹100', 'warning');
+                return;
+            }
+
+            document.getElementById('withdrawalAmount').max = balance;
+            document.getElementById('withdrawalAmount').value = balance;
+            openModal('withdrawalModal');
+        }
+
+        function submitWithdrawalRequest() {
+            const amount = document.getElementById('withdrawalAmount').value;
+            const bankDetails = document.getElementById('bankDetails').value;
+            const upiId = document.getElementById('upiId').value;
+
+            if (!amount || amount < 100) {
+                showNotification('Minimum withdrawal amount is ₹100', 'error');
+                return;
+            }
+
+            if (amount > currentUser.accountBalance) {
+                showNotification('Amount exceeds your balance', 'error');
+                return;
+            }
+
+            if (!bankDetails && !upiId) {
+                showNotification('Please provide bank details or UPI ID', 'error');
+                return;
+            }
+
+            const message = encodeURIComponent(
+                `💰 *Withdrawal Request*\n\n` +
+                `👤 *Name:* ${currentUser.name}\n` +
+                `📱 *Phone:* ${currentUser.phone}\n` +
+                `🔖 *Referral Code:* ${currentUser.referralCode}\n` +
+                `💵 *Amount:* ${formatCurrency(amount)}\n` +
+                `🏦 *Bank Details:* ${bankDetails || 'N/A'}\n` +
+                `💳 *UPI ID:* ${upiId || 'N/A'}\n` +
+                `📅 *Date:* ${new Date().toLocaleDateString()}\n\n` +
+                `Please process my withdrawal request.`
+            );
+
+            window.open(`https://wa.me/919985943961?text=${message}`, '_blank');
+            showNotification('Withdrawal request submitted via WhatsApp');
+            closeModal('withdrawalModal');
+        }
+
+        function showTeamModal() {
+            if (!currentUser) return;
+            updateTeamMembersList(currentUser.referralCode);
+            openModal('teamModal');
+        }
+
+        function checkDailyBonus() {
+            showNotification('Daily bonus feature coming soon!', 'warning');
+        }
+
+        function explainEarningPlan() {
+            openModal('earningPlanModal');
+        }
+
+        function shareAccountDetails() {
+            if (!currentUser) return;
+
+            const message = encodeURIComponent(
+                `🏆 *My MultiConnect Account*\n\n` +
+                `👤 *Name:* ${currentUser.name}\n` +
+                `📱 *Phone:* ${currentUser.phone}\n` +
+                `🔖 *Referral Code:* ${currentUser.referralCode}\n` +
+                `💰 *Earnings:* ${formatCurrency(currentUser.totalEarnings)}\n` +
+                `🏦 *Balance:* ${formatCurrency(currentUser.accountBalance)}\n` +
+                `👥 *Team Members:* ${currentUser.totalTeam}\n\n` +
+                `*Join using my code and let's earn together!*`
+            );
+
+            window.open(`https://wa.me/?text=${message}`, '_blank');
+            showNotification('Sharing account details...');
+        }
+
+        function downloadStatement() {
+            if (!currentUser) return;
+            
+            const statement = `
+                MultiConnect Account Statement
+                Generated on: ${new Date().toLocaleDateString()}
+                
+                Account Details:
+                ----------------
+                Name: ${currentUser.name}
+                Phone: ${currentUser.phone}
+                Referral Code: ${currentUser.referralCode}
+                Referred By: ${currentUser.referredBy || 'Direct'}
+                Team Name: ${currentUser.teamName || '-'}
+                Payment Date: ${currentUser.paymentDate || '-'}
+                
+                Financial Summary:
+                -----------------
+                Initial Deposit: ${formatCurrency(currentUser.deposit)}
+                Bonuses: ${formatCurrency(currentUser.bonuses)}
+                Earnings: ${formatCurrency(currentUser.earnings)}
+                Total Earnings: ${formatCurrency(currentUser.totalEarnings)}
+                Account Balance: ${formatCurrency(currentUser.accountBalance)}
+                Total Withdrawal: ${formatCurrency(currentUser.totalWithdrawal)}
+                
+                Breakdown:
+                ----------
+                Level 1 Earnings: ${formatCurrency(currentUser.level1)}
+                Level 2 Earnings: ${formatCurrency(currentUser.level2)}
+                Level 3 Earnings: ${formatCurrency(currentUser.level3)}
+                
+                Team Stats:
+                -----------
+                Total Team Members: ${currentUser.totalTeam}
+                
+                Status: ${currentUser.status || 'Active'}
+            `;
+
+            const blob = new Blob([statement], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `MultiConnect_Statement_${currentUser.referralCode}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification('Statement downloaded successfully!');
+        }
+
+        function contactSupport() {
+            window.open('https://wa.me/919985943961', '_blank');
+        }
+
+        function logout() {
+            currentUser = null;
+            allUsers = [];
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('dashboard').classList.add('hidden');
+            
+            // Reset form
+            document.getElementById('phoneNumber').value = '';
+            document.getElementById('referralCode').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('loginMethod').value = 'phone';
+            toggleLoginMethod();
+            
+            showNotification('Logged out successfully!', 'success');
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function showNotification(message, type = 'success', containerId = 'notificationContainer') {
+            const container = document.getElementById(containerId);
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            container.appendChild(notification);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 5000);
+        }
+
+        function hideNotification(containerId) {
+            const container = document.getElementById(containerId);
+            if (container) {
+                container.innerHTML = '';
+                container.classList.add('hidden');
+            }
+        }
+
+        function showLoading(message) {
+            document.getElementById('loadingMessage').textContent = message;
+            document.getElementById('loadingOverlay').classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+        }
+
+        function formatCurrency(amount) {
+            return `₹${parseFloat(amount || 0).toFixed(2)}`;
+        }
+
+        function startCountdown() {
+            function updateTimer() {
+                const now = new Date();
+                const endOfDay = new Date(now);
+                endOfDay.setHours(23, 59, 59, 999);
+                
+                const diff = endOfDay - now;
+                
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                document.getElementById('countdownTimer').textContent = 
+                    `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+            
+            updateTimer();
+            setInterval(updateTimer, 1000);
+        }
+    </script>
+</body>
+</html>
