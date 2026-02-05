@@ -6,6 +6,10 @@
     <title>MultiConnect Earning Program</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <!-- Confetti.js -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         :root {
             --primary: #667eea;
@@ -28,9 +32,73 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             color: var(--dark);
+            overflow-x: hidden;
+            background: #000;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(-45deg, #667eea, #764ba2, #4f46e5, #8b5cf6);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) translateX(0); }
+            100% { transform: translateY(-100vh) translateX(100px); }
+        }
+
+        /* Pointer Animation */
+        .pointer {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            animation: pulse 1s infinite;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            50% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.5; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
         }
 
         /* Hide elements */
@@ -45,19 +113,20 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(0, 0, 0, 0.9);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            z-index: 10000;
+            color: white;
         }
 
         .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid var(--gray-light);
-            border-top: 5px solid var(--primary);
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid var(--primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-bottom: 20px;
@@ -75,66 +144,174 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            backdrop-filter: blur(10px);
         }
 
         .login-card {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 50px 40px;
             width: 100%;
-            max-width: 450px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.8s ease-out;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .login-logo {
             display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 50%;
+            display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
-            font-size: 28px;
+            font-size: 36px;
+            color: white;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .logo-text {
+            font-size: 36px;
             font-weight: 900;
-            color: var(--primary);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        .login-tabs {
+            display: flex;
+            gap: 10px;
             margin-bottom: 30px;
         }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--gray);
-            font-weight: 500;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 14px;
-            border: 2px solid var(--gray-light);
-            border-radius: 10px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 14px 24px;
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: var(--gray-light);
             border: none;
             border-radius: 10px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .floating-label {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            transform: translateY(-50%);
+            color: var(--gray);
+            transition: all 0.3s;
+            pointer-events: none;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 20px 15px 10px;
+            border: 2px solid var(--gray-light);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-control:focus + .floating-label,
+        .form-control:not(:placeholder-shown) + .floating-label {
+            top: 12px;
+            font-size: 12px;
+            color: var(--primary);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 16px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
             text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+
+        .btn:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
         }
 
         .btn-primary {
@@ -144,8 +321,8 @@
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.3);
         }
 
         .btn-success {
@@ -153,13 +330,13 @@
             color: white;
         }
 
-        .btn-secondary {
-            background: var(--secondary);
+        .btn-warning {
+            background: var(--warning);
             color: white;
         }
 
-        .btn-warning {
-            background: var(--warning);
+        .btn-danger {
+            background: var(--danger);
             color: white;
         }
 
@@ -169,47 +346,70 @@
             color: var(--primary);
         }
 
+        .forgot-password {
+            text-align: right;
+            margin-top: -15px;
+            margin-bottom: 25px;
+        }
+
+        .forgot-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .forgot-link:hover {
+            color: var(--secondary);
+            text-decoration: underline;
+        }
+
         .support-info {
-            margin-top: 30px;
-            padding-top: 20px;
+            margin-top: 40px;
+            padding-top: 25px;
             border-top: 1px solid var(--gray-light);
         }
 
         .support-contact {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-top: 15px;
+            gap: 12px;
+            margin-top: 20px;
         }
 
         .contact-item {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 10px;
+            gap: 12px;
+            padding: 12px;
             background: var(--light);
-            border-radius: 8px;
+            border-radius: 10px;
             color: var(--dark);
             text-decoration: none;
-            transition: background 0.3s;
+            transition: all 0.3s;
         }
 
         .contact-item:hover {
-            background: var(--gray-light);
+            background: var(--primary);
+            color: white;
+            transform: translateX(5px);
         }
 
         /* Dashboard */
         .dashboard {
             min-height: 100vh;
-            background: var(--light);
+            background: rgba(249, 250, 251, 0.95);
+            backdrop-filter: blur(10px);
         }
 
         .dashboard-header {
-            background: white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .header-content {
@@ -222,7 +422,7 @@
         .header-left .logo {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
             font-size: 24px;
             font-weight: 900;
             color: var(--primary);
@@ -231,18 +431,24 @@
         .header-right {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 25px;
         }
 
         .user-info {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .user-info:hover {
+            transform: scale(1.05);
         }
 
         .user-avatar {
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             border-radius: 50%;
             display: flex;
@@ -250,84 +456,149 @@
             justify-content: center;
             color: white;
             font-weight: 600;
+            font-size: 20px;
+            overflow: hidden;
+            border: 3px solid white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .dashboard-content {
-            padding: 30px 0;
+            padding: 40px 0;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 25px;
         }
 
+        /* Welcome Section */
         .welcome-section {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 30px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .welcome-text h1 {
-            font-size: 28px;
+            font-size: 32px;
             color: var(--dark);
             margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
         .welcome-text p {
             color: var(--gray);
+            font-size: 18px;
+            max-width: 600px;
         }
 
         .referral-box {
             background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             text-align: center;
-            min-width: 250px;
+            min-width: 280px;
+            animation: pulse 2s infinite;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .referral-box::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--success));
+            z-index: -1;
+            border-radius: 22px;
+            animation: borderRotate 3s linear infinite;
+        }
+
+        @keyframes borderRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .referral-code {
-            font-size: 24px;
-            font-weight: 700;
+            font-size: 28px;
+            font-weight: 800;
             color: var(--primary);
-            margin: 10px 0;
-            letter-spacing: 2px;
+            margin: 15px 0;
+            letter-spacing: 3px;
+            font-family: monospace;
         }
 
         .copy-btn {
             background: var(--light);
             border: 2px solid var(--gray-light);
-            padding: 8px 16px;
-            border-radius: 8px;
+            padding: 10px 20px;
+            border-radius: 10px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             margin: 0 auto;
             transition: all 0.3s;
         }
 
         .copy-btn:hover {
-            background: var(--gray-light);
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
         }
 
         /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
         }
 
         .stat-card {
             background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
         }
 
         .stat-header {
@@ -337,8 +608,8 @@
         }
 
         .stat-value {
-            font-size: 32px;
-            font-weight: 700;
+            font-size: 36px;
+            font-weight: 800;
             margin-bottom: 5px;
         }
 
@@ -360,162 +631,298 @@
 
         .stat-label {
             color: var(--gray);
-            font-size: 14px;
+            font-size: 15px;
         }
 
         .stat-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 28px;
         }
 
         .stat-icon.earnings {
-            background: rgba(16, 185, 129, 0.1);
+            background: rgba(16, 185, 129, 0.15);
             color: var(--success);
         }
 
         .stat-icon.balance {
-            background: rgba(102, 126, 234, 0.1);
+            background: rgba(102, 126, 234, 0.15);
             color: var(--primary);
         }
 
         .stat-icon.team {
-            background: rgba(118, 75, 162, 0.1);
+            background: rgba(118, 75, 162, 0.15);
             color: var(--secondary);
         }
 
         .stat-icon.withdrawal {
-            background: rgba(245, 158, 11, 0.1);
+            background: rgba(245, 158, 11, 0.15);
             color: var(--warning);
         }
 
-        /* Referral Message Section */
-        .referral-message-section {
+        /* Enhanced Team Members Section */
+        .team-section {
             background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 35px;
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+
+        .team-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 30px;
         }
 
-        .countdown-timer {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            margin: 20px 0;
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
         }
 
-        .timer-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #92400E;
-            margin-bottom: 10px;
-        }
-
-        .timer-display {
-            font-size: 24px;
-            font-weight: 700;
-            color: #92400E;
-            font-family: monospace;
-        }
-
-        .progress-container {
-            margin: 20px 0;
-        }
-
-        .progress-label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 14px;
-            color: var(--gray);
-        }
-
-        .progress-bar {
-            height: 10px;
-            background: var(--gray-light);
-            border-radius: 5px;
+        .team-member-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            position: relative;
             overflow: hidden;
         }
 
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(135deg, var(--success) 0%, #34d399 100%);
-            border-radius: 5px;
-            transition: width 0.5s ease;
+        .team-member-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.15);
         }
 
-        /* Quick Actions */
-        .quick-actions {
+        .member-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .member-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid var(--primary);
+        }
+
+        .member-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .member-info {
+            flex: 1;
+        }
+
+        .member-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .member-contact {
+            font-size: 14px;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .member-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 12px;
+            background: var(--light);
+            border-radius: 12px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .member-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .action-btn.whatsapp {
+            background: #25D366;
+            color: white;
+        }
+
+        .action-btn.message {
+            background: var(--primary);
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Daily Bonus Section */
+        .daily-bonus-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px;
+            border-radius: 25px;
+            color: white;
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .daily-bonus-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: moveBackground 20s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes moveBackground {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .bonus-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .bonus-amount {
+            font-size: 60px;
+            font-weight: 900;
+            margin: 20px 0;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .bonus-timer {
+            font-size: 24px;
+            font-weight: 700;
             margin-bottom: 30px;
+            font-family: monospace;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 15px;
+            display: inline-block;
         }
 
         /* Earnings Breakdown */
         .earnings-breakdown {
             background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            margin-bottom: 30px;
+            padding: 35px;
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
         }
 
         .breakdown-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         .breakdown-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
         }
 
         .breakdown-item {
-            padding: 20px;
-            border-radius: 10px;
+            padding: 30px;
+            border-radius: 20px;
             text-align: center;
+            transition: transform 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .breakdown-item:hover {
+            transform: scale(1.05);
         }
 
         .breakdown-item.level1 {
-            background: rgba(16, 185, 129, 0.1);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.2));
             border: 2px solid var(--success);
         }
 
         .breakdown-item.level2 {
-            background: rgba(102, 126, 234, 0.1);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(102, 126, 234, 0.2));
             border: 2px solid var(--primary);
         }
 
         .breakdown-item.level3 {
-            background: rgba(118, 75, 162, 0.1);
+            background: linear-gradient(135deg, rgba(118, 75, 162, 0.1), rgba(118, 75, 162, 0.2));
             border: 2px solid var(--secondary);
         }
 
         .breakdown-item.total {
-            background: rgba(245, 158, 11, 0.1);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.2));
             border: 2px solid var(--warning);
         }
 
         .breakdown-label {
-            font-size: 14px;
-            color: var(--gray);
-            margin-bottom: 8px;
+            font-size: 16px;
+            color: var(--dark);
+            margin-bottom: 15px;
+            font-weight: 600;
         }
 
         .breakdown-value {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 5px;
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 10px;
         }
 
         .breakdown-item.level1 .breakdown-value {
@@ -534,82 +941,45 @@
             color: var(--warning);
         }
 
-        /* Details Grid */
-        .details-grid {
+        /* Quick Actions */
+        .quick-actions {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .detail-card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .detail-card h3 {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            color: var(--dark);
-        }
-
-        .detail-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--gray-light);
-        }
-
-        .detail-item:last-child {
-            border-bottom: none;
-        }
-
-        .detail-label {
-            color: var(--gray);
-        }
-
-        .detail-value {
-            font-weight: 500;
-        }
-
-        .detail-value.positive {
-            color: var(--success);
+            margin-bottom: 40px;
         }
 
         /* Action Buttons */
         .action-buttons {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
         }
 
         /* WhatsApp Float */
         .whatsapp-float {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
+            bottom: 40px;
+            right: 40px;
+            width: 70px;
+            height: 70px;
             background: #25D366;
             color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 30px;
-            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
-            z-index: 100;
+            font-size: 34px;
+            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
+            z-index: 1000;
             transition: all 0.3s;
+            animation: float 3s ease-in-out infinite;
         }
 
         .whatsapp-float:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
+            transform: scale(1.15) rotate(10deg);
+            box-shadow: 0 15px 35px rgba(37, 211, 102, 0.6);
         }
 
         /* Modals */
@@ -620,11 +990,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            animation: fadeIn 0.3s ease-out;
         }
 
         .modal.active {
@@ -633,88 +1005,128 @@
 
         .modal-content {
             background: white;
-            border-radius: 20px;
-            padding: 30px;
-            max-width: 500px;
+            border-radius: 30px;
+            padding: 40px;
+            max-width: 600px;
             width: 100%;
-            max-height: 80vh;
+            max-height: 85vh;
             overflow-y: auto;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            animation: slideUpModal 0.4s ease-out;
+            position: relative;
+        }
+
+        @keyframes slideUpModal {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         .modal-header h3 {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
             color: var(--dark);
+            font-size: 24px;
         }
 
         .close-btn {
             background: none;
             border: none;
-            font-size: 24px;
+            font-size: 28px;
             cursor: pointer;
             color: var(--gray);
-        }
-
-        .message-preview {
-            background: var(--light);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            white-space: pre-wrap;
-            max-height: 200px;
-            overflow-y: auto;
-            font-size: 14px;
-        }
-
-        .share-options {
+            transition: color 0.3s;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
         }
 
-        .share-btn {
-            flex: 1;
-            min-width: 120px;
+        .close-btn:hover {
+            color: var(--danger);
+            background: var(--light);
         }
 
         /* Notifications */
         .notification {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 20px;
-            border-radius: 10px;
+            top: 30px;
+            right: 30px;
+            padding: 20px 25px;
+            border-radius: 15px;
             color: white;
-            font-weight: 500;
-            z-index: 1001;
-            animation: slideIn 0.3s ease;
+            font-weight: 600;
+            z-index: 2001;
+            animation: slideIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
         }
 
         .notification.success {
-            background: var(--success);
+            background: linear-gradient(135deg, var(--success), #34d399);
         }
 
         .notification.error {
-            background: var(--danger);
+            background: linear-gradient(135deg, var(--danger), #f87171);
         }
 
         .notification.warning {
-            background: var(--warning);
+            background: linear-gradient(135deg, var(--warning), #fbbf24);
+        }
+
+        .notification.info {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
         }
 
         @keyframes slideIn {
+            from {
+                transform: translateX(100%) translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* App Notification Badge */
+        .app-notification {
+            position: fixed;
+            bottom: 120px;
+            right: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            z-index: 999;
+            animation: slideInRight 0.5s ease-out, float 6s ease-in-out infinite;
+            max-width: 300px;
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            transform: translateY(0);
+        }
+
+        @keyframes slideInRight {
             from {
                 transform: translateX(100%);
                 opacity: 0;
@@ -726,9 +1138,33 @@
         }
 
         /* Responsive */
+        @media (max-width: 1200px) {
+            .team-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+
+        @media (max-width: 992px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .team-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .breakdown-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
         @media (max-width: 768px) {
             .login-card {
-                padding: 30px 20px;
+                padding: 40px 25px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
             }
             
             .welcome-section {
@@ -736,7 +1172,11 @@
                 text-align: center;
             }
             
-            .stats-grid {
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .breakdown-grid {
                 grid-template-columns: 1fr;
             }
             
@@ -748,29 +1188,106 @@
                 grid-template-columns: 1fr;
             }
             
-            .modal-content {
-                padding: 20px;
+            .daily-bonus-section {
+                padding: 30px 20px;
+            }
+            
+            .bonus-amount {
+                font-size: 48px;
             }
             
             .whatsapp-float {
-                bottom: 20px;
+                bottom: 30px;
+                right: 30px;
+                width: 60px;
+                height: 60px;
+                font-size: 28px;
+            }
+            
+            .app-notification {
+                bottom: 100px;
                 right: 20px;
-                width: 50px;
-                height: 50px;
-                font-size: 24px;
+                max-width: calc(100% - 40px);
             }
         }
+
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 30px 20px;
+            }
+            
+            .modal-content {
+                padding: 30px 20px;
+            }
+            
+            .notification {
+                left: 20px;
+                right: 20px;
+                max-width: none;
+            }
+            
+            .user-info {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+
+        /* Password Modal */
+        .password-form {
+            display: grid;
+            gap: 20px;
+        }
+
+        .password-strength {
+            height: 5px;
+            background: var(--gray-light);
+            border-radius: 3px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+            border-radius: 3px;
+        }
+
+        .strength-weak { background: var(--danger); width: 33%; }
+        .strength-medium { background: var(--warning); width: 66%; }
+        .strength-strong { background: var(--success); width: 100%; }
     </style>
 </head>
 <body>
+    <!-- Animated Background -->
+    <div class="animated-bg"></div>
+    
+    <!-- Floating Particles -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Custom Pointer -->
+    <div class="pointer" id="customPointer"></div>
+    
     <!-- Loading Overlay -->
-    <div class="loading-overlay hidden" id="loadingOverlay">
+    <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner"></div>
         <div id="loadingMessage">Loading your account...</div>
     </div>
 
     <!-- Notification Container -->
     <div id="notificationContainer"></div>
+
+    <!-- App Notification -->
+    <div class="app-notification hidden" id="appNotification">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div style="font-size: 24px;">💰</div>
+            <div>
+                <strong>Refer & Earn Money!</strong>
+                <p style="font-size: 14px; opacity: 0.9; margin-top: 5px;">Invite friends and earn up to ₹1000!</p>
+            </div>
+        </div>
+    </div>
 
     <!-- WhatsApp Float -->
     <a href="https://wa.me/919985943961" class="whatsapp-float" target="_blank">
@@ -781,32 +1298,43 @@
     <div class="login-container" id="loginPage">
         <div class="login-card">
             <div class="login-logo">
-                <i class="fas fa-network-wired"></i>
-                <span>MultiConnect</span>
+                <div class="logo-icon">
+                    <i class="fas fa-network-wired"></i>
+                </div>
+                <div class="logo-text">MultiConnect</div>
             </div>
+            
             <div id="loginError" class="notification error hidden" style="position: relative; top: 0; right: 0; margin-bottom: 20px;"></div>
+            
+            <div class="login-tabs">
+                <button class="tab-btn active" onclick="switchTab('phone')">Phone</button>
+                <button class="tab-btn" onclick="switchTab('email')">Email</button>
+                <button class="tab-btn" onclick="switchTab('referral')">Referral</button>
+            </div>
+            
             <form id="loginForm">
-                <div class="form-group">
-                    <label for="loginMethod">Login Method</label>
-                    <select id="loginMethod" class="form-control" onchange="toggleLoginMethod()">
-                        <option value="phone">Phone Number</option>
-                        <option value="referral">Referral Code</option>
-                    </select>
+                <div class="form-group" id="phoneField">
+                    <input type="tel" id="phoneNumber" class="form-control" placeholder=" " pattern="[0-9]{10}" required>
+                    <label class="floating-label">Phone Number</label>
                 </div>
                 
-                <div class="form-group" id="phoneField">
-                    <label for="phoneNumber">Phone Number</label>
-                    <input type="tel" id="phoneNumber" class="form-control" placeholder="Enter your phone number" pattern="[0-9]{10}" required>
+                <div class="form-group hidden" id="emailField">
+                    <input type="email" id="email" class="form-control" placeholder=" ">
+                    <label class="floating-label">Email Address</label>
                 </div>
                 
                 <div class="form-group hidden" id="referralField">
-                    <label for="referralCode">Referral Code</label>
-                    <input type="text" id="referralCode" class="form-control" placeholder="Enter your referral code">
+                    <input type="text" id="referralCode" class="form-control" placeholder=" ">
+                    <label class="floating-label">Referral Code</label>
                 </div>
                 
                 <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
+                    <input type="password" id="password" class="form-control" placeholder=" " required>
+                    <label class="floating-label">Password</label>
+                </div>
+                
+                <div class="forgot-password">
+                    <a href="#" class="forgot-link" onclick="showForgotPasswordModal()">Forgot Password?</a>
                 </div>
                 
                 <button type="button" class="btn btn-primary" onclick="login()">
@@ -841,14 +1369,16 @@
                         </div>
                     </div>
                     <div class="header-right">
-                        <div class="user-info">
-                            <div class="user-avatar" id="userAvatar">U</div>
+                        <div class="user-info" onclick="showProfileModal()">
+                            <div class="user-avatar" id="userAvatar">
+                                <img id="userAvatarImg" src="" alt="Profile" onerror="this.style.display='none'; this.parentNode.innerHTML=this.parentNode.textContent">
+                            </div>
                             <div>
-                                <div style="font-weight: 600;" id="userName">User</div>
-                                <div style="font-size: 12px; color: var(--gray);" id="userReferralCode">REFCODE</div>
+                                <div style="font-weight: 700;" id="userName">User</div>
+                                <div style="font-size: 13px; color: var(--gray);" id="userReferralCode">REFCODE</div>
                             </div>
                         </div>
-                        <button class="btn btn-outline" onclick="logout()" style="padding: 8px 16px;">
+                        <button class="btn btn-outline" onclick="logout()" style="padding: 10px 20px;">
                             <i class="fas fa-sign-out-alt"></i> Logout
                         </button>
                     </div>
@@ -866,7 +1396,7 @@
                         <p>Your MultiConnect account dashboard. Track earnings, team growth, and manage your account.</p>
                     </div>
                     <div class="referral-box">
-                        <div style="font-size: 14px; opacity: 0.9;">Your Referral Code</div>
+                        <div style="font-size: 15px; opacity: 0.9;">Your Referral Code</div>
                         <div class="referral-code" id="dashboardReferralCode">REFCODE</div>
                         <button class="copy-btn" onclick="copyReferralCode()">
                             <i class="fas fa-copy"></i> Copy Code
@@ -925,36 +1455,28 @@
                     </div>
                 </div>
 
-                <!-- New Features Section -->
-                <div class="referral-message-section">
-                    <h3><i class="fas fa-bullhorn"></i> Invite Friends & Earn</h3>
-                    <p style="margin-bottom: 20px; color: var(--gray);">
-                        Share your referral message and earn commission from 3 levels! 🚀
-                    </p>
-
-                    <!-- Special Offer Countdown -->
-                    <div class="countdown-timer">
-                        <div class="timer-title">⏰ LIMITED TIME OFFER</div>
-                        <div class="timer-display" id="countdownTimer">23:59:59</div>
-                        <div style="font-size: 12px; color: #92400E; margin-top: 8px;">
-                            Join 5 members in 1 week & get your money back!
-                        </div>
+                <!-- Daily Bonus Section -->
+                <div class="daily-bonus-section" id="dailyBonusSection">
+                    <div class="bonus-content">
+                        <h2 style="margin-bottom: 20px;">🎁 Daily Bonus</h2>
+                        <div class="bonus-amount" id="dailyBonusAmount">₹0</div>
+                        <p style="margin-bottom: 20px;">Claim your daily bonus of ₹2-₹10!</p>
+                        <div class="bonus-timer" id="dailyBonusTimer">24:00:00</div>
+                        <button class="btn btn-warning" onclick="claimDailyBonus()" style="padding: 15px 30px; font-size: 18px;">
+                            <i class="fas fa-gift"></i> Claim Bonus
+                        </button>
                     </div>
+                </div>
 
-                    <!-- Referral Progress -->
-                    <div class="progress-container">
-                        <div class="progress-label">
-                            <span>Weekly Referral Target</span>
-                            <span><span id="currentReferrals">0</span>/5 members</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="referralProgress" style="width: 0%"></div>
-                        </div>
+                <!-- Team Members Section -->
+                <div class="team-section">
+                    <div class="team-header">
+                        <h2><i class="fas fa-users"></i> Team Members</h2>
+                        <span class="stat-label" id="totalTeamCount">0 members</span>
                     </div>
-
-                    <button class="btn btn-success" onclick="showReferralMessage()" style="margin-top: 20px; width: 100%;">
-                        <i class="fas fa-share-alt"></i> Share Referral Message
-                    </button>
+                    <div class="team-grid" id="teamMembersGrid">
+                        <!-- Team members will be loaded here -->
+                    </div>
                 </div>
 
                 <!-- Quick Actions -->
@@ -968,8 +1490,8 @@
                     <button class="btn btn-warning" onclick="showTeamModal()">
                         <i class="fas fa-users"></i> View Team
                     </button>
-                    <button class="btn btn-success" onclick="checkDailyBonus()">
-                        <i class="fas fa-gift"></i> Daily Bonus
+                    <button class="btn btn-success" onclick="showChangePasswordModal()">
+                        <i class="fas fa-key"></i> Change Password
                     </button>
                 </div>
 
@@ -977,7 +1499,7 @@
                 <div class="earnings-breakdown">
                     <div class="breakdown-header">
                         <h3><i class="fas fa-chart-pie"></i> Earnings Breakdown</h3>
-                        <button class="btn btn-outline" style="padding: 8px 16px;" onclick="explainEarningPlan()">
+                        <button class="btn btn-outline" style="padding: 10px 20px;" onclick="explainEarningPlan()">
                             <i class="fas fa-info-circle"></i> How It Works
                         </button>
                     </div>
@@ -985,75 +1507,22 @@
                         <div class="breakdown-item level1">
                             <div class="breakdown-label">Level 1 Earnings</div>
                             <div class="breakdown-value" id="level1Earnings">₹0</div>
-                            <div style="font-size: 12px;">₹100 per referral</div>
+                            <div style="font-size: 14px;">₹100 per referral</div>
                         </div>
                         <div class="breakdown-item level2">
                             <div class="breakdown-label">Level 2 Earnings</div>
                             <div class="breakdown-value" id="level2Earnings">₹0</div>
-                            <div style="font-size: 12px;">₹50 per referral</div>
+                            <div style="font-size: 14px;">₹50 per referral</div>
                         </div>
                         <div class="breakdown-item level3">
                             <div class="breakdown-label">Level 3 Earnings</div>
                             <div class="breakdown-value" id="level3Earnings">₹0</div>
-                            <div style="font-size: 12px;">₹50 per referral</div>
+                            <div style="font-size: 14px;">₹50 per referral</div>
                         </div>
                         <div class="breakdown-item total">
                             <div class="breakdown-label">Total Earnings</div>
                             <div class="breakdown-value" id="totalEarningsBreakdown">₹0</div>
-                            <div style="font-size: 12px; opacity: 0.9;">Join 10 members earn ₹1000</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Details Grid -->
-                <div class="details-grid">
-                    <!-- Account Details -->
-                    <div class="detail-card">
-                        <h3><i class="fas fa-user-circle"></i> Account Details</h3>
-                        <div class="detail-item">
-                            <span class="detail-label">Name</span>
-                            <span class="detail-value" id="detailName">-</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Phone Number</span>
-                            <span class="detail-value" id="detailPhone">-</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Referral Code</span>
-                            <span class="detail-value" id="detailReferralCode">-</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Referred By</span>
-                            <span class="detail-value" id="detailReferredBy">-</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Team Name</span>
-                            <span class="detail-value" id="detailTeamName">-</span>
-                        </div>
-                    </div>
-
-                    <!-- Financial Details -->
-                    <div class="detail-card">
-                        <h3><i class="fas fa-money-bill-wave"></i> Financial Details</h3>
-                        <div class="detail-item">
-                            <span class="detail-label">Initial Deposit</span>
-                            <span class="detail-value" id="detailDeposit">₹0</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Bonuses</span>
-                            <span class="detail-value" id="detailBonuses">₹0</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Payment Date</span>
-                            <span class="detail-value" id="detailPaymentDate">-</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Earnings</span>
-                            <span class="detail-value positive" id="detailEarnings">₹0</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Account Balance</span>
-                            <span class="detail-value positive" id="detailAccountBalance">₹0</span>
+                            <div style="font-size: 14px; opacity: 0.9;">Join 10 members earn ₹1000</div>
                         </div>
                     </div>
                 </div>
@@ -1093,6 +1562,7 @@
         </div>
     </div>
 
+    <!-- Modals -->
     <!-- Referral Message Modal -->
     <div class="modal" id="referralMessageModal">
         <div class="modal-content">
@@ -1104,7 +1574,7 @@
             <div class="message-preview" id="referralMessagePreview">
                 Loading message...
             </div>
-            <div class="share-options">
+            <div class="share-options" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 25px;">
                 <button class="btn btn-success share-btn" onclick="shareViaWhatsApp()">
                     <i class="fab fa-whatsapp"></i> WhatsApp
                 </button>
@@ -1126,19 +1596,19 @@
                 <button class="close-btn" onclick="closeModal('withdrawalModal')">&times;</button>
             </div>
             <div class="form-group">
-                <label for="withdrawalAmount">Amount to Withdraw</label>
+                <label for="withdrawalAmount" style="display: block; margin-bottom: 8px; color: var(--dark);">Amount to Withdraw</label>
                 <input type="number" id="withdrawalAmount" class="form-control" placeholder="Enter amount" min="100" max="100000">
                 <small style="color: var(--gray);">Minimum withdrawal: ₹100</small>
             </div>
             <div class="form-group">
-                <label for="bankDetails">Bank Details</label>
+                <label for="bankDetails" style="display: block; margin-bottom: 8px; color: var(--dark);">Bank Details</label>
                 <textarea id="bankDetails" class="form-control" rows="3" placeholder="Account Number, IFSC, Name"></textarea>
             </div>
             <div class="form-group">
-                <label for="upiId">UPI ID (Optional)</label>
+                <label for="upiId" style="display: block; margin-bottom: 8px; color: var(--dark);">UPI ID (Optional)</label>
                 <input type="text" id="upiId" class="form-control" placeholder="Enter your UPI ID">
             </div>
-            <button class="btn btn-primary" onclick="submitWithdrawalRequest()">
+            <button class="btn btn-primary" onclick="submitWithdrawalRequest()" style="width: 100%; padding: 15px;">
                 <i class="fas fa-paper-plane"></i> Submit Request
             </button>
         </div>
@@ -1151,52 +1621,91 @@
                 <h3><i class="fas fa-users"></i> Team Members</h3>
                 <button class="close-btn" onclick="closeModal('teamModal')">&times;</button>
             </div>
-            <div id="teamMembersList">
+            <div id="teamMembersList" style="max-height: 400px; overflow-y: auto; padding: 10px;">
                 Loading team members...
             </div>
         </div>
     </div>
 
-    <!-- Earning Plan Explanation Modal -->
-    <div class="modal" id="earningPlanModal">
+    <!-- Forgot Password Modal -->
+    <div class="modal" id="forgotPasswordModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3><i class="fas fa-info-circle"></i> MultiConnect Earning Plan</h3>
-                <button class="close-btn" onclick="closeModal('earningPlanModal')">&times;</button>
+                <h3><i class="fas fa-key"></i> Forgot Password</h3>
+                <button class="close-btn" onclick="closeModal('forgotPasswordModal')">&times;</button>
             </div>
-            <div style="max-height: 400px; overflow-y: auto;">
-                <h4>📊 3-Level Referral System:</h4>
-                <ul style="margin-left: 20px; margin-bottom: 20px;">
-                    <li><strong>Level 1:</strong> Earn ₹100 for each direct referral</li>
-                    <li><strong>Level 2:</strong> Earn ₹50 for each referral by your team</li>
-                    <li><strong>Level 3:</strong> Earn ₹50 for each referral by level 2 team</li>
-                </ul>
+            <p style="margin-bottom: 20px; color: var(--gray);">Enter your phone number or email to reset your password:</p>
+            <div class="form-group">
+                <input type="text" id="resetCredential" class="form-control" placeholder="Phone number or email">
+            </div>
+            <button class="btn btn-primary" onclick="requestPasswordReset()" style="width: 100%; padding: 15px;">
+                <i class="fas fa-paper-plane"></i> Send Password
+            </button>
+        </div>
+    </div>
 
-                <h4>💰 Example Calculation:</h4>
-                <div style="background: var(--light); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
-                    <p>If you refer 5 people (Level 1), and each refers 3 people (Level 2), and each of those refers 2 people (Level 3):</p>
-                    <ul style="margin-left: 20px;">
-                        <li>Level 1: 5 × ₹100 = ₹500</li>
-                        <li>Level 2: 15 × ₹50 = ₹750</li>
-                        <li>Level 3: 30 × ₹50 = ₹1500</li>
-                        <li><strong>Total Earnings: ₹2750</strong></li>
-                    </ul>
+    <!-- Change Password Modal -->
+    <div class="modal" id="changePasswordModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-key"></i> Change Password</h3>
+                <button class="close-btn" onclick="closeModal('changePasswordModal')">&times;</button>
+            </div>
+            <div class="password-form">
+                <div class="form-group">
+                    <input type="password" id="currentPassword" class="form-control" placeholder="Current Password">
                 </div>
+                <div class="form-group">
+                    <input type="password" id="newPassword" class="form-control" placeholder="New Password" onkeyup="checkPasswordStrength()">
+                    <div class="password-strength">
+                        <div class="strength-bar" id="passwordStrength"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm New Password">
+                </div>
+                <button class="btn btn-primary" onclick="changePassword()" style="width: 100%; padding: 15px;">
+                    <i class="fas fa-save"></i> Change Password
+                </button>
+            </div>
+        </div>
+    </div>
 
-                <h4>🎁 Special Offers:</h4>
-                <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 15px; border-radius: 10px;">
-                    <p><strong>🔥 Exclusive Limited-Time Offers:</strong></p>
-                    <ul style="margin-left: 20px;">
-                        <li>Join 5 members in 1 week → Get ₹299 back!</li>
-                        <li>Join 10 members → Earn ₹1000 bonus!</li>
-                    </ul>
+    <!-- Profile Modal -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-circle"></i> My Profile</h3>
+                <button class="close-btn" onclick="closeModal('profileModal')">&times;</button>
+            </div>
+            <div style="text-align: center; margin-bottom: 30px;">
+                <div class="user-avatar" style="width: 100px; height: 100px; margin: 0 auto 20px;">
+                    <img id="profileAvatarImg" src="" alt="Profile" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.parentNode.innerHTML=this.parentNode.textContent">
                 </div>
-
-                <div style="text-align: center; margin-top: 20px;">
-                    <button class="btn btn-success" onclick="closeModal('earningPlanModal'); showReferralMessage();">
-                        <i class="fas fa-share-alt"></i> Start Sharing Now!
-                    </button>
+                <h3 id="profileName">Loading...</h3>
+                <p style="color: var(--gray);" id="profileEmail">Loading...</p>
+            </div>
+            <div style="background: var(--light); padding: 20px; border-radius: 15px; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span>Referral Code:</span>
+                    <strong id="profileReferralCode">-</strong>
                 </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span>Phone:</span>
+                    <strong id="profilePhone">-</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>Member Since:</span>
+                    <strong id="profileJoinDate">-</strong>
+                </div>
+            </div>
+            <div style="display: grid; gap: 15px;">
+                <button class="btn btn-outline" onclick="closeModal('profileModal'); showChangePasswordModal();">
+                    <i class="fas fa-key"></i> Change Password
+                </button>
+                <button class="btn btn-primary" onclick="shareAccountDetails()">
+                    <i class="fas fa-share-alt"></i> Share Profile
+                </button>
             </div>
         </div>
     </div>
@@ -1206,9 +1715,21 @@
         const GOOGLE_SHEETS_URL = 'https://docs.google.com/spreadsheets/d/1ryioJmyKvWPp7anEu2P842ZPuM5dqCMlYppjXcfzN_E/gviz/tq?tqx=out:json&gid=0';
         let currentUser = null;
         let allUsers = [];
+        let pointerColors = [
+            '#FF6B6B', '#4ECDC4', '#FFD166', '#06D6A0', '#118AB2',
+            '#073B4C', '#EF476F', '#FFD166', '#06D6A0', '#118AB2',
+            '#7209B7', '#3A86FF', '#FB5607', '#8338EC', '#FF006E'
+        ];
+        let currentPointerColor = 0;
+        let dailyBonusClaimed = false;
+        let notificationInterval;
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
+            initParticles();
+            initCustomPointer();
+            initAppNotifications();
+            
             // Enter key support for login
             document.getElementById('password').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
@@ -1216,17 +1737,174 @@
                 }
             });
             
-            // Initialize countdown timer
-            startCountdown();
+            // Initialize daily bonus
+            initDailyBonus();
+            
+            // Start notification interval
+            startNotificationInterval();
         });
 
-        function toggleLoginMethod() {
-            const method = document.getElementById('loginMethod').value;
-            document.getElementById('phoneField').classList.toggle('hidden', method !== 'phone');
-            document.getElementById('referralField').classList.toggle('hidden', method !== 'referral');
+        function initParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.animationDelay = `${Math.random() * 20}s`;
+                particle.style.width = `${Math.random() * 4 + 2}px`;
+                particle.style.height = particle.style.width;
+                particle.style.background = `rgba(255, 255, 255, ${Math.random() * 0.3 + 0.1})`;
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        function initCustomPointer() {
+            const pointer = document.getElementById('customPointer');
+            let mouseX = 0;
+            let mouseY = 0;
             
-            if (method === 'referral') {
-                document.getElementById('referralCode').focus();
+            document.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                pointer.style.left = `${mouseX}px`;
+                pointer.style.top = `${mouseY}px`;
+                
+                // Change color on click
+                if (e.buttons === 1) {
+                    changePointerColor();
+                }
+            });
+            
+            document.addEventListener('click', changePointerColor);
+            
+            // Touch support
+            document.addEventListener('touchstart', (e) => {
+                mouseX = e.touches[0].clientX;
+                mouseY = e.touches[0].clientY;
+                pointer.style.left = `${mouseX}px`;
+                pointer.style.top = `${mouseY}px`;
+                changePointerColor();
+            });
+            
+            document.addEventListener('touchmove', (e) => {
+                mouseX = e.touches[0].clientX;
+                mouseY = e.touches[0].clientY;
+                pointer.style.left = `${mouseX}px`;
+                pointer.style.top = `${mouseY}px`;
+            });
+        }
+
+        function changePointerColor() {
+            const pointer = document.getElementById('customPointer');
+            currentPointerColor = (currentPointerColor + 1) % pointerColors.length;
+            pointer.style.background = pointerColors[currentPointerColor];
+            pointer.style.boxShadow = `0 0 20px ${pointerColors[currentPointerColor]}`;
+        }
+
+        function initAppNotifications() {
+            // Show notification every 2 hours
+            setInterval(() => {
+                if (document.getElementById('dashboard').classList.contains('hidden')) {
+                    showAppNotification();
+                }
+            }, 2 * 60 * 60 * 1000);
+            
+            // Initial notification after 30 seconds
+            setTimeout(() => {
+                showAppNotification();
+            }, 30000);
+        }
+
+        function showAppNotification() {
+            const notification = document.getElementById('appNotification');
+            notification.classList.remove('hidden');
+            
+            // Auto hide after 10 seconds
+            setTimeout(() => {
+                notification.classList.add('hidden');
+            }, 10000);
+            
+            // Click to hide
+            notification.onclick = () => {
+                notification.classList.add('hidden');
+            };
+        }
+
+        function initDailyBonus() {
+            // Check if bonus was claimed today
+            const lastClaim = localStorage.getItem('dailyBonusLastClaim');
+            const today = new Date().toDateString();
+            
+            if (lastClaim === today) {
+                dailyBonusClaimed = true;
+                document.getElementById('dailyBonusAmount').textContent = '₹0';
+                document.getElementById('dailyBonusSection').style.opacity = '0.5';
+            } else {
+                // Generate random bonus amount
+                const bonusAmount = Math.floor(Math.random() * 9) + 2; // ₹2-₹10
+                document.getElementById('dailyBonusAmount').textContent = `₹${bonusAmount}`;
+            }
+            
+            // Start countdown timer
+            startBonusCountdown();
+        }
+
+        function startBonusCountdown() {
+            function updateTimer() {
+                const now = new Date();
+                const endOfDay = new Date(now);
+                endOfDay.setHours(23, 59, 59, 999);
+                
+                const diff = endOfDay - now;
+                
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                document.getElementById('dailyBonusTimer').textContent = 
+                    `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+            
+            updateTimer();
+            setInterval(updateTimer, 1000);
+        }
+
+        function startNotificationInterval() {
+            const messages = [
+                "🎉 Refer friends and earn up to ₹1000!",
+                "💰 Daily bonus available! Claim now!",
+                "🚀 Join 5 members in 1 week & get your money back!",
+                "📈 Your team is growing! Check your earnings!",
+                "💎 New member joined your team!",
+                "🔥 Limited time offer! Don't miss out!"
+            ];
+            
+            notificationInterval = setInterval(() => {
+                if (!document.getElementById('dashboard').classList.contains('hidden')) {
+                    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+                    showNotification(randomMessage, 'info');
+                }
+            }, 300000); // Every 5 minutes
+        }
+
+        function switchTab(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Show/hide fields
+            document.getElementById('phoneField').classList.add('hidden');
+            document.getElementById('emailField').classList.add('hidden');
+            document.getElementById('referralField').classList.add('hidden');
+            
+            if (tab === 'phone') {
+                document.getElementById('phoneField').classList.remove('hidden');
+            } else if (tab === 'email') {
+                document.getElementById('emailField').classList.remove('hidden');
+            } else {
+                document.getElementById('referralField').classList.remove('hidden');
             }
         }
 
@@ -1246,7 +1924,7 @@
                     return {
                         name: cells[0]?.v || '',
                         phone: cells[1]?.v?.toString() || '',
-                        password: cells[2]?.v?.toString() || '', // Password column
+                        password: cells[2]?.v?.toString() || '',
                         referralCode: cells[3]?.v || '',
                         referredBy: cells[4]?.v || '',
                         teamName: cells[5]?.v || '',
@@ -1263,7 +1941,9 @@
                         level2: parseFloat(cells[16]?.v) || 0,
                         level3: parseFloat(cells[17]?.v) || 0,
                         totalEarnings: parseFloat(cells[18]?.v) || 0,
-                        status: cells[19]?.v || ''
+                        status: cells[19]?.v || '',
+                        profilePic: cells[20]?.v || '', // Column U - Profile Picture
+                        email: cells[21]?.v || '' // Column W - Email
                     };
                 });
                 
@@ -1278,8 +1958,8 @@
         }
 
         async function login() {
-            const method = document.getElementById('loginMethod').value;
             const phone = document.getElementById('phoneNumber').value.trim();
+            const email = document.getElementById('email').value.trim();
             const referralCode = document.getElementById('referralCode').value.trim().toUpperCase();
             const password = document.getElementById('password').value.trim();
             
@@ -1292,14 +1972,27 @@
                 return;
             }
             
-            if (method === 'phone' && !phone) {
-                showNotification('Phone number is required', 'error', 'loginError');
-                return;
-            }
+            const activeTab = document.querySelector('.tab-btn.active').textContent.toLowerCase();
+            let credential = '';
             
-            if (method === 'referral' && !referralCode) {
-                showNotification('Referral code is required', 'error', 'loginError');
-                return;
+            if (activeTab.includes('phone')) {
+                credential = phone;
+                if (!credential) {
+                    showNotification('Phone number is required', 'error', 'loginError');
+                    return;
+                }
+            } else if (activeTab.includes('email')) {
+                credential = email;
+                if (!credential) {
+                    showNotification('Email is required', 'error', 'loginError');
+                    return;
+                }
+            } else {
+                credential = referralCode;
+                if (!credential) {
+                    showNotification('Referral code is required', 'error', 'loginError');
+                    return;
+                }
             }
             
             // Fetch data
@@ -1312,10 +2005,12 @@
             
             // Find user
             let user = null;
-            if (method === 'phone') {
-                user = users.find(u => u.phone === phone);
+            if (activeTab.includes('phone')) {
+                user = users.find(u => u.phone === credential);
+            } else if (activeTab.includes('email')) {
+                user = users.find(u => u.email.toLowerCase() === credential.toLowerCase());
             } else {
-                user = users.find(u => u.referralCode === referralCode);
+                user = users.find(u => u.referralCode === credential);
             }
             
             // Check password
@@ -1324,6 +2019,13 @@
                 if (user.password === password) {
                     currentUser = user;
                     showNotification(`Welcome back, ${user.name}!`, 'success');
+                    // Celebrate login
+                    confetti({
+                        particleCount: 100,
+                        spread: 70,
+                        origin: { y: 0.6 }
+                    });
+                    
                     setTimeout(() => {
                         showDashboard();
                         updateDashboard(user);
@@ -1339,11 +2041,21 @@
         function showDashboard() {
             document.getElementById('loginPage').classList.add('hidden');
             document.getElementById('dashboard').classList.remove('hidden');
+            
+            // Trigger animations
+            document.querySelectorAll('.stat-card, .team-member-card, .breakdown-item').forEach(card => {
+                card.style.animation = 'fadeIn 0.8s ease-out';
+            });
         }
 
         function updateDashboard(user) {
             // Update user info
             document.getElementById('userName').textContent = user.name;
+            const avatar = document.getElementById('userAvatarImg');
+            if (user.profilePic) {
+                avatar.src = user.profilePic;
+                avatar.style.display = 'block';
+            }
             document.getElementById('userAvatar').textContent = user.name.charAt(0).toUpperCase();
             document.getElementById('userReferralCode').textContent = user.referralCode;
             document.getElementById('welcomeName').textContent = user.name;
@@ -1361,56 +2073,256 @@
             document.getElementById('level3Earnings').textContent = formatCurrency(user.level3);
             document.getElementById('totalEarningsBreakdown').textContent = formatCurrency(user.totalEarnings);
             
-            // Update details
-            document.getElementById('detailName').textContent = user.name;
-            document.getElementById('detailPhone').textContent = user.phone;
-            document.getElementById('detailReferralCode').textContent = user.referralCode;
-            document.getElementById('detailReferredBy').textContent = user.referredBy || 'Direct';
-            document.getElementById('detailTeamName').textContent = user.teamName || '-';
-            document.getElementById('detailDeposit').textContent = formatCurrency(user.deposit);
-            document.getElementById('detailBonuses').textContent = formatCurrency(user.bonuses);
-            document.getElementById('detailPaymentDate').textContent = user.paymentDate || '-';
-            document.getElementById('detailEarnings').textContent = formatCurrency(user.earnings);
-            document.getElementById('detailAccountBalance').textContent = formatCurrency(user.accountBalance);
+            // Update team members
+            updateTeamMembers(user.referralCode);
             
-            // Update referral progress
-            const referralCount = user.totalTeam || 0;
-            const progressPercentage = Math.min(100, (referralCount / 5) * 100);
-            document.getElementById('currentReferrals').textContent = referralCount;
-            document.getElementById('referralProgress').style.width = `${progressPercentage}%`;
-            
-            // Update team members list
-            updateTeamMembersList(user.referralCode);
+            // Update profile modal data
+            document.getElementById('profileName').textContent = user.name;
+            document.getElementById('profileEmail').textContent = user.email || 'Not provided';
+            document.getElementById('profileReferralCode').textContent = user.referralCode;
+            document.getElementById('profilePhone').textContent = user.phone;
+            document.getElementById('profileJoinDate').textContent = user.paymentDate || '-';
+            const profileAvatar = document.getElementById('profileAvatarImg');
+            if (user.profilePic) {
+                profileAvatar.src = user.profilePic;
+                profileAvatar.style.display = 'block';
+            }
         }
 
-        function updateTeamMembersList(referralCode) {
+        function updateTeamMembers(referralCode) {
             const teamMembers = allUsers.filter(user => user.referredBy === referralCode);
-            const teamList = document.getElementById('teamMembersList');
+            const teamGrid = document.getElementById('teamMembersGrid');
+            const totalTeamCount = document.getElementById('totalTeamCount');
+            
+            totalTeamCount.textContent = `${teamMembers.length} members`;
             
             if (teamMembers.length === 0) {
-                teamList.innerHTML = '<p style="text-align: center; color: var(--gray);">No team members yet.</p>';
+                teamGrid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
+                        <i class="fas fa-users" style="font-size: 60px; color: var(--gray-light); margin-bottom: 20px;"></i>
+                        <h3 style="color: var(--gray); margin-bottom: 10px;">No team members yet</h3>
+                        <p style="color: var(--gray);">Start referring friends to build your team!</p>
+                        <button class="btn btn-primary" onclick="showReferralMessage()" style="margin-top: 20px;">
+                            <i class="fas fa-share-alt"></i> Invite Friends
+                        </button>
+                    </div>
+                `;
                 return;
             }
             
-            teamList.innerHTML = `
-                <div style="display: flex; justify-content: space-between; margin-bottom: 10px; padding: 10px; background: var(--light); border-radius: 8px; font-weight: 600;">
-                    <span>Name</span>
-                    <span>Join Date</span>
-                    <span>Status</span>
-                </div>
-                ${teamMembers.map(member => `
-                    <div style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid var(--gray-light);">
-                        <span>${member.name}</span>
-                        <span>${member.paymentDate || '-'}</span>
-                        <span style="color: ${member.status.includes('✅') ? 'var(--success)' : 'var(--gray)'}">
-                            ${member.status || 'Active'}
-                        </span>
+            teamGrid.innerHTML = teamMembers.map(member => `
+                <div class="team-member-card">
+                    <div class="member-header">
+                        <div class="member-avatar">
+                            <img src="${member.profilePic || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(member.name) + '&background=667eea&color=fff&size=128'}" 
+                                 alt="${member.name}" 
+                                 onerror="this.src='https://ui-avatars.com/api/?name=' + encodeURIComponent('${member.name}') + '&background=667eea&color=fff&size=128'">
+                        </div>
+                        <div class="member-info">
+                            <div class="member-name">${member.name}</div>
+                            <div class="member-contact">
+                                <i class="fas fa-phone"></i> ${member.phone}
+                                ${member.email ? `<br><i class="fas fa-envelope"></i> ${member.email}` : ''}
+                            </div>
+                        </div>
                     </div>
-                `).join('')}
-                <div style="text-align: center; margin-top: 20px; padding: 15px; background: var(--light); border-radius: 10px;">
-                    <strong>Total Team Members:</strong> ${teamMembers.length}
+                    
+                    <div class="member-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">Earnings</div>
+                            <div class="stat-value">${formatCurrency(member.totalEarnings)}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Joined</div>
+                            <div class="stat-value">${member.paymentDate || '-'}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="member-actions">
+                        <button class="action-btn whatsapp" onclick="messageMember('${member.phone}', '${member.name}')">
+                            <i class="fab fa-whatsapp"></i> Message
+                        </button>
+                        <button class="action-btn message" onclick="viewMemberDetails('${member.referralCode}')">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                    </div>
                 </div>
-            `;
+            `).join('');
+        }
+
+        function messageMember(phone, name) {
+            const message = encodeURIComponent(`Hi ${name}, how are you doing? This is your team leader from MultiConnect.`);
+            window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+        }
+
+        function viewMemberDetails(referralCode) {
+            const member = allUsers.find(u => u.referralCode === referralCode);
+            if (member) {
+                showNotification(`Viewing ${member.name}'s details`, 'info');
+                // In a real app, you might want to show a modal with detailed member info
+                const message = `
+                    👤 *Member Details*
+                    ----------------
+                    Name: ${member.name}
+                    Phone: ${member.phone}
+                    Email: ${member.email || 'Not provided'}
+                    Referral Code: ${member.referralCode}
+                    Join Date: ${member.paymentDate || '-'}
+                    Earnings: ${formatCurrency(member.totalEarnings)}
+                    Team Size: ${member.totalTeam}
+                    Status: ${member.status || 'Active'}
+                `;
+                alert(message);
+            }
+        }
+
+        function claimDailyBonus() {
+            if (dailyBonusClaimed) {
+                showNotification('You have already claimed your daily bonus today!', 'warning');
+                return;
+            }
+            
+            const bonusAmount = parseInt(document.getElementById('dailyBonusAmount').textContent.replace('₹', ''));
+            if (bonusAmount > 0) {
+                // Update user's balance
+                currentUser.accountBalance += bonusAmount;
+                currentUser.totalEarnings += bonusAmount;
+                
+                // Save to localStorage
+                localStorage.setItem('dailyBonusLastClaim', new Date().toDateString());
+                
+                // Update UI
+                document.getElementById('accountBalance').textContent = formatCurrency(currentUser.accountBalance);
+                document.getElementById('totalEarnings').textContent = formatCurrency(currentUser.totalEarnings);
+                document.getElementById('dailyBonusSection').style.opacity = '0.5';
+                dailyBonusClaimed = true;
+                
+                // Celebrate
+                confetti({
+                    particleCount: 150,
+                    spread: 100,
+                    origin: { y: 0.6 }
+                });
+                
+                showNotification(`🎉 Daily bonus of ₹${bonusAmount} claimed!`, 'success');
+                
+                // Send WhatsApp notification
+                const message = encodeURIComponent(
+                    `💰 *Daily Bonus Claimed*\n\n` +
+                    `👤 *Name:* ${currentUser.name}\n` +
+                    `📱 *Phone:* ${currentUser.phone}\n` +
+                    `🔖 *Referral Code:* ${currentUser.referralCode}\n` +
+                    `💵 *Bonus Amount:* ${formatCurrency(bonusAmount)}\n` +
+                    `🏦 *New Balance:* ${formatCurrency(currentUser.accountBalance)}\n` +
+                    `📅 *Date:* ${new Date().toLocaleDateString()}`
+                );
+                
+                window.open(`https://wa.me/919985943961?text=${message}`, '_blank');
+            }
+        }
+
+        function showForgotPasswordModal() {
+            openModal('forgotPasswordModal');
+        }
+
+        function requestPasswordReset() {
+            const credential = document.getElementById('resetCredential').value.trim();
+            if (!credential) {
+                showNotification('Please enter your phone number or email', 'error');
+                return;
+            }
+            
+            // Find user
+            const user = allUsers.find(u => u.phone === credential || u.email === credential);
+            if (!user) {
+                showNotification('User not found. Please check your credentials.', 'error');
+                return;
+            }
+            
+            // Send password via WhatsApp
+            const message = encodeURIComponent(
+                `🔑 *Password Recovery Request*\n\n` +
+                `👤 *Name:* ${user.name}\n` +
+                `📱 *Phone:* ${user.phone}\n` +
+                `📧 *Email:* ${user.email || 'Not provided'}\n` +
+                `🔖 *Referral Code:* ${user.referralCode}\n` +
+                `🔐 *Password:* ${user.password}\n\n` +
+                `If you didn't request this, please ignore this message.`
+            );
+            
+            window.open(`https://wa.me/919985943961?text=${message}`, '_blank');
+            showNotification('Password recovery request sent via WhatsApp');
+            closeModal('forgotPasswordModal');
+        }
+
+        function showChangePasswordModal() {
+            openModal('changePasswordModal');
+        }
+
+        function checkPasswordStrength() {
+            const password = document.getElementById('newPassword').value;
+            const strengthBar = document.getElementById('passwordStrength');
+            
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+            
+            strengthBar.className = 'strength-bar';
+            if (strength <= 1) {
+                strengthBar.classList.add('strength-weak');
+            } else if (strength <= 2) {
+                strengthBar.classList.add('strength-medium');
+            } else {
+                strengthBar.classList.add('strength-strong');
+            }
+        }
+
+        function changePassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                showNotification('Please fill all fields', 'error');
+                return;
+            }
+            
+            if (currentPassword !== currentUser.password) {
+                showNotification('Current password is incorrect', 'error');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                showNotification('New passwords do not match', 'error');
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                showNotification('Password must be at least 6 characters', 'error');
+                return;
+            }
+            
+            // Send password change request via WhatsApp
+            const message = encodeURIComponent(
+                `🔑 *Password Change Request*\n\n` +
+                `👤 *Name:* ${currentUser.name}\n` +
+                `📱 *Phone:* ${currentUser.phone}\n` +
+                `🔖 *Referral Code:* ${currentUser.referralCode}\n` +
+                `📧 *Email:* ${currentUser.email || 'Not provided'}\n` +
+                `🔐 *Current Password:* ${currentPassword}\n` +
+                `🔐 *New Password:* ${newPassword}\n\n` +
+                `Please update my password in the system.`
+            );
+            
+            window.open(`https://wa.me/919985943961?text=${message}`, '_blank');
+            showNotification('Password change request sent via WhatsApp');
+            closeModal('changePasswordModal');
+        }
+
+        function showProfileModal() {
+            openModal('profileModal');
         }
 
         function showReferralMessage() {
@@ -1548,6 +2460,7 @@ Don't miss out on this opportunity! ✨`;
                 `💰 *Withdrawal Request*\n\n` +
                 `👤 *Name:* ${currentUser.name}\n` +
                 `📱 *Phone:* ${currentUser.phone}\n` +
+                `📧 *Email:* ${currentUser.email || 'Not provided'}\n` +
                 `🔖 *Referral Code:* ${currentUser.referralCode}\n` +
                 `💵 *Amount:* ${formatCurrency(amount)}\n` +
                 `🏦 *Bank Details:* ${bankDetails || 'N/A'}\n` +
@@ -1567,12 +2480,44 @@ Don't miss out on this opportunity! ✨`;
             openModal('teamModal');
         }
 
-        function checkDailyBonus() {
-            showNotification('Daily bonus feature coming soon!', 'warning');
+        function updateTeamMembersList(referralCode) {
+            const teamMembers = allUsers.filter(user => user.referredBy === referralCode);
+            const teamList = document.getElementById('teamMembersList');
+            
+            if (teamMembers.length === 0) {
+                teamList.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 40px;">No team members yet.</p>';
+                return;
+            }
+            
+            teamList.innerHTML = `
+                <div style="display: grid; gap: 15px;">
+                    ${teamMembers.map(member => `
+                        <div style="display: flex; align-items: center; gap: 15px; padding: 20px; background: var(--light); border-radius: 15px;">
+                            <img src="${member.profilePic || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(member.name) + '&background=667eea&color=fff'}" 
+                                 style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;"
+                                 onerror="this.src='https://ui-avatars.com/api/?name=' + encodeURIComponent('${member.name}') + '&background=667eea&color=fff'">
+                            <div style="flex: 1;">
+                                <div style="font-weight: 700; margin-bottom: 5px;">${member.name}</div>
+                                <div style="font-size: 13px; color: var(--gray); margin-bottom: 5px;">
+                                    <i class="fas fa-phone"></i> ${member.phone}
+                                </div>
+                                <div style="display: flex; gap: 10px; font-size: 12px;">
+                                    <span>Earnings: ${formatCurrency(member.totalEarnings)}</span>
+                                    <span>Joined: ${member.paymentDate || '-'}</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-success" onclick="messageMember('${member.phone}', '${member.name}')" style="padding: 8px 12px; font-size: 12px;">
+                                <i class="fab fa-whatsapp"></i>
+                            </button>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
         }
 
         function explainEarningPlan() {
-            openModal('earningPlanModal');
+            // Similar to previous implementation
+            showNotification('Earning plan explanation coming soon!', 'info');
         }
 
         function shareAccountDetails() {
@@ -1582,6 +2527,7 @@ Don't miss out on this opportunity! ✨`;
                 `🏆 *My MultiConnect Account*\n\n` +
                 `👤 *Name:* ${currentUser.name}\n` +
                 `📱 *Phone:* ${currentUser.phone}\n` +
+                `📧 *Email:* ${currentUser.email || 'Not provided'}\n` +
                 `🔖 *Referral Code:* ${currentUser.referralCode}\n` +
                 `💰 *Earnings:* ${formatCurrency(currentUser.totalEarnings)}\n` +
                 `🏦 *Balance:* ${formatCurrency(currentUser.accountBalance)}\n` +
@@ -1604,6 +2550,7 @@ Don't miss out on this opportunity! ✨`;
                 ----------------
                 Name: ${currentUser.name}
                 Phone: ${currentUser.phone}
+                Email: ${currentUser.email || 'Not provided'}
                 Referral Code: ${currentUser.referralCode}
                 Referred By: ${currentUser.referredBy || 'Direct'}
                 Team Name: ${currentUser.teamName || '-'}
@@ -1651,15 +2598,17 @@ Don't miss out on this opportunity! ✨`;
         function logout() {
             currentUser = null;
             allUsers = [];
+            clearInterval(notificationInterval);
+            
             document.getElementById('loginPage').classList.remove('hidden');
             document.getElementById('dashboard').classList.add('hidden');
             
             // Reset form
             document.getElementById('phoneNumber').value = '';
+            document.getElementById('email').value = '';
             document.getElementById('referralCode').value = '';
             document.getElementById('password').value = '';
-            document.getElementById('loginMethod').value = 'phone';
-            toggleLoginMethod();
+            switchTab('phone');
             
             showNotification('Logged out successfully!', 'success');
         }
@@ -1677,7 +2626,7 @@ Don't miss out on this opportunity! ✨`;
             const notification = document.createElement('div');
             notification.className = `notification ${type}`;
             notification.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
                 <span>${message}</span>
             `;
             
@@ -1710,26 +2659,6 @@ Don't miss out on this opportunity! ✨`;
 
         function formatCurrency(amount) {
             return `₹${parseFloat(amount || 0).toFixed(2)}`;
-        }
-
-        function startCountdown() {
-            function updateTimer() {
-                const now = new Date();
-                const endOfDay = new Date(now);
-                endOfDay.setHours(23, 59, 59, 999);
-                
-                const diff = endOfDay - now;
-                
-                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-                
-                document.getElementById('countdownTimer').textContent = 
-                    `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            }
-            
-            updateTimer();
-            setInterval(updateTimer, 1000);
         }
     </script>
 </body>
