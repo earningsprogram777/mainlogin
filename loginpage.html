@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MultiConnect Earning Program</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <!-- Animate.css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <!-- Confetti.js -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         :root {
             --primary: #667eea;
@@ -18,10 +20,22 @@
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
+            --info: #3b82f6;
             --dark: #1f2937;
             --light: #f9fafb;
             --gray: #6b7280;
             --gray-light: #e5e7eb;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-success: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            --gradient-danger: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.15);
+            --shadow-xl: 0 25px 50px rgba(0, 0, 0, 0.2);
+            --radius: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         * {
@@ -31,11 +45,12 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
+            background: var(--dark);
             min-height: 100vh;
-            color: var(--dark);
+            color: white;
             overflow-x: hidden;
-            background: #000;
+            position: relative;
         }
 
         /* Animated Background */
@@ -45,19 +60,26 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
-            background: linear-gradient(-45deg, #667eea, #764ba2, #4f46e5, #8b5cf6);
+            z-index: -2;
+            background: linear-gradient(-45deg, #667eea, #764ba2, #5a67d8, #3b82f6);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
         }
 
         @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
-        /* Floating Particles */
         .particles {
             position: fixed;
             top: 0;
@@ -70,19 +92,24 @@
 
         .particle {
             position: absolute;
-            width: 4px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             animation: float 20s infinite linear;
         }
 
         @keyframes float {
-            0% { transform: translateY(100vh) translateX(0); }
-            100% { transform: translateY(-100vh) translateX(100px); }
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
         }
 
-        /* Pointer Animation */
+        /* Pointer Effects */
         .pointer {
             position: fixed;
             width: 20px;
@@ -91,14 +118,20 @@
             pointer-events: none;
             z-index: 9999;
             mix-blend-mode: difference;
-            animation: pulse 1s infinite;
-            transform: translate(-50%, -50%);
+            transition: transform 0.1s;
+            filter: drop-shadow(0 0 5px currentColor);
         }
 
-        @keyframes pulse {
-            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-            50% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.5; }
-            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        .pointer-trail {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+            filter: blur(1px);
         }
 
         /* Hide elements */
@@ -119,22 +152,52 @@
             justify-content: center;
             align-items: center;
             z-index: 10000;
-            color: white;
+            backdrop-filter: blur(10px);
         }
 
         .spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top: 4px solid var(--primary);
+            width: 70px;
+            height: 70px;
+            border: 5px solid transparent;
+            border-top: 5px solid var(--primary);
+            border-right: 5px solid var(--secondary);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
+            animation: rotate 1s linear infinite;
+            margin-bottom: 25px;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-text {
+            font-size: 18px;
+            font-weight: 500;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 0.8;
+            }
         }
 
         /* Login Page */
@@ -144,200 +207,255 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
-            backdrop-filter: blur(10px);
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .login-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 25px;
-            padding: 50px 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-xl);
+            padding: 50px;
             width: 100%;
             max-width: 500px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
-            animation: slideUp 0.8s ease-out;
-            transform-style: preserve-3d;
-            perspective: 1000px;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideUp 0.8s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         @keyframes slideUp {
             from {
+                transform: translateY(30px);
                 opacity: 0;
-                transform: translateY(50px);
             }
+
             to {
-                opacity: 1;
                 transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% {
+                transform: translateX(-100%) translateY(-100%) rotate(45deg);
+            }
+
+            100% {
+                transform: translateX(100%) translateY(100%) rotate(45deg);
             }
         }
 
         .login-logo {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 40px;
-        }
-
-        .logo-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            border-radius: 50%;
-            display: flex;
             align-items: center;
             justify-content: center;
+            gap: 15px;
             font-size: 36px;
-            color: white;
+            font-weight: 900;
+            margin-bottom: 40px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
             animation: bounce 2s infinite;
         }
 
         @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
         }
 
-        .logo-text {
-            font-size: 36px;
-            font-weight: 900;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-align: center;
+        .login-logo i {
+            font-size: 42px;
+            animation: rotate 20s linear infinite;
         }
 
-        .login-tabs {
+        .tabs {
             display: flex;
             gap: 10px;
             margin-bottom: 30px;
+            border-radius: var(--radius);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px;
         }
 
-        .tab-btn {
+        .tab {
             flex: 1;
             padding: 15px;
-            background: var(--gray-light);
             border: none;
-            border-radius: 10px;
-            font-size: 16px;
+            background: transparent;
+            color: white;
             font-weight: 600;
+            border-radius: var(--radius);
             cursor: pointer;
-            transition: all 0.3s;
+            transition: var(--transition);
+            text-align: center;
         }
 
-        .tab-btn.active {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        .tab.active {
+            background: var(--gradient);
+            box-shadow: var(--shadow);
         }
 
         .form-group {
             margin-bottom: 25px;
-            position: relative;
+            animation: slideInRight 0.6s ease;
         }
 
-        .floating-label {
-            position: absolute;
-            top: 50%;
-            left: 15px;
-            transform: translateY(-50%);
-            color: var(--gray);
-            transition: all 0.3s;
-            pointer-events: none;
+        @keyframes slideInRight {
+            from {
+                transform: translateX(30px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .form-control {
             width: 100%;
-            padding: 20px 15px 10px;
-            border: 2px solid var(--gray-light);
-            border-radius: 12px;
+            padding: 18px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius);
             font-size: 16px;
-            transition: all 0.3s;
-            background: rgba(255, 255, 255, 0.9);
+            color: white;
+            transition: var(--transition);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.5);
         }
 
         .form-control:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
         }
 
-        .form-control:focus + .floating-label,
-        .form-control:not(:placeholder-shown) + .floating-label {
-            top: 12px;
-            font-size: 12px;
-            color: var(--primary);
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 18px;
+        }
+
+        .input-with-icon .form-control {
+            padding-left: 50px;
         }
 
         .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            padding: 16px 28px;
+            gap: 12px;
+            padding: 18px 32px;
             border: none;
-            border-radius: 12px;
+            border-radius: var(--radius);
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: var(--transition);
             text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             position: relative;
             overflow: hidden;
         }
 
-        .btn::after {
+        .btn::before {
             content: '';
             position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 5px;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.5);
-            opacity: 0;
-            border-radius: 100%;
-            transform: scale(1, 1) translate(-50%);
-            transform-origin: 50% 50%;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
         }
 
-        .btn:focus:not(:active)::after {
-            animation: ripple 1s ease-out;
-        }
-
-        @keyframes ripple {
-            0% {
-                transform: scale(0, 0);
-                opacity: 0.5;
-            }
-            100% {
-                transform: scale(20, 20);
-                opacity: 0;
-            }
+        .btn:hover::before {
+            left: 100%;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background: var(--gradient);
             color: white;
             width: 100%;
+            box-shadow: var(--shadow);
         }
 
         .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.3);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
         }
 
         .btn-success {
-            background: var(--success);
+            background: var(--gradient-success);
             color: white;
+            box-shadow: var(--shadow);
         }
 
         .btn-warning {
-            background: var(--warning);
+            background: var(--gradient-warning);
             color: white;
+            box-shadow: var(--shadow);
         }
 
         .btn-danger {
-            background: var(--danger);
+            background: var(--gradient-danger);
             color: white;
+            box-shadow: var(--shadow);
         }
 
         .btn-outline {
@@ -346,86 +464,122 @@
             color: var(--primary);
         }
 
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-small {
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+
         .forgot-password {
             text-align: right;
-            margin-top: -15px;
-            margin-bottom: 25px;
+            margin-top: 15px;
         }
 
-        .forgot-link {
-            color: var(--primary);
+        .forgot-password a {
+            color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
             font-size: 14px;
-            transition: color 0.3s;
+            transition: var(--transition);
         }
 
-        .forgot-link:hover {
-            color: var(--secondary);
-            text-decoration: underline;
+        .forgot-password a:hover {
+            color: var(--primary);
         }
 
         .support-info {
             margin-top: 40px;
-            padding-top: 25px;
-            border-top: 1px solid var(--gray-light);
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .support-contact {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 15px;
             margin-top: 20px;
         }
 
         .contact-item {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 12px;
-            background: var(--light);
-            border-radius: 10px;
-            color: var(--dark);
+            gap: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            color: white;
             text-decoration: none;
-            transition: all 0.3s;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
         }
 
         .contact-item:hover {
-            background: var(--primary);
-            color: white;
-            transform: translateX(5px);
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(10px);
+        }
+
+        .contact-item i {
+            font-size: 20px;
+            color: var(--primary);
         }
 
         /* Dashboard */
         .dashboard {
             min-height: 100vh;
-            background: rgba(249, 250, 251, 0.95);
-            backdrop-filter: blur(10px);
+            background: var(--dark);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .dashboard.loaded {
+            opacity: 1;
         }
 
         .dashboard-header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            background: rgba(31, 41, 55, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             position: sticky;
             top: 0;
             z-index: 1000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 20px 0;
+            animation: slideDown 0.5s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 0;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
 
         .header-left .logo {
             display: flex;
             align-items: center;
             gap: 15px;
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 900;
-            color: var(--primary);
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .header-right {
@@ -439,33 +593,92 @@
             align-items: center;
             gap: 15px;
             cursor: pointer;
-            transition: transform 0.3s;
+            padding: 10px;
+            border-radius: var(--radius);
+            transition: var(--transition);
         }
 
         .user-info:hover {
-            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.05);
         }
 
         .user-avatar {
             width: 50px;
             height: 50px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid transparent;
+            background: var(--gradient);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 20px;
-            overflow: hidden;
-            border: 3px solid white;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            animation: glow 2s infinite;
+        }
+
+        @keyframes glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 5px var(--primary);
+            }
+
+            50% {
+                box-shadow: 0 0 20px var(--primary);
+            }
         }
 
         .user-avatar img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .user-code {
+            font-size: 12px;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+            font-size: 22px;
+            color: rgba(255, 255, 255, 0.8);
+            transition: var(--transition);
+        }
+
+        .notification-bell:hover {
+            color: var(--primary);
+            transform: rotate(15deg);
+        }
+
+        .notification-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--danger);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .dashboard-content {
@@ -475,10 +688,9 @@
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 0 25px;
+            padding: 0 20px;
         }
 
-        /* Welcome Section */
         .welcome-section {
             display: flex;
             justify-content: space-between;
@@ -486,87 +698,74 @@
             margin-bottom: 40px;
             flex-wrap: wrap;
             gap: 30px;
-            animation: fadeIn 1s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            animation: slideUp 0.6s ease;
         }
 
         .welcome-text h1 {
-            font-size: 32px;
-            color: var(--dark);
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .welcome-text p {
-            color: var(--gray);
-            font-size: 18px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 16px;
             max-width: 600px;
         }
 
         .referral-box {
-            background: white;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
             padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
             text-align: center;
             min-width: 280px;
-            animation: pulse 2s infinite;
-            border: 2px solid transparent;
-            background-clip: padding-box;
-            position: relative;
-            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: pulse 3s infinite;
         }
 
-        .referral-box::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--success));
-            z-index: -1;
-            border-radius: 22px;
-            animation: borderRotate 3s linear infinite;
-        }
-
-        @keyframes borderRotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .referral-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .referral-code {
             font-size: 28px;
-            font-weight: 800;
-            color: var(--primary);
+            font-weight: 900;
             margin: 15px 0;
             letter-spacing: 3px;
-            font-family: monospace;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .copy-btn {
-            background: var(--light);
-            border: 2px solid var(--gray-light);
-            padding: 10px 20px;
-            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 24px;
+            border-radius: var(--radius);
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 10px;
             margin: 0 auto;
-            transition: all 0.3s;
+            transition: var(--transition);
+            color: white;
+            font-weight: 500;
         }
 
         .copy-btn:hover {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
         }
 
         /* Stats Grid */
@@ -578,27 +777,19 @@
         }
 
         .stat-card {
-            background: white;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
             padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s;
-            position: relative;
-            overflow: hidden;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+            animation: slideUp 0.6s ease;
         }
 
         .stat-card:hover {
             transform: translateY(-10px);
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            box-shadow: var(--shadow-lg);
         }
 
         .stat-header {
@@ -608,36 +799,50 @@
         }
 
         .stat-value {
-            font-size: 36px;
-            font-weight: 800;
-            margin-bottom: 5px;
+            font-size: 42px;
+            font-weight: 900;
+            margin-bottom: 10px;
         }
 
         .stat-card.earnings .stat-value {
-            color: var(--success);
+            background: var(--gradient-success);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .stat-card.balance .stat-value {
-            color: var(--primary);
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .stat-card.team .stat-value {
-            color: var(--secondary);
+            background: linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .stat-card.withdrawal .stat-value {
-            color: var(--warning);
+            background: var(--gradient-warning);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .stat-label {
-            color: var(--gray);
-            font-size: 15px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .stat-icon {
             width: 60px;
             height: 60px;
-            border-radius: 15px;
+            border-radius: var(--radius);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -645,62 +850,334 @@
         }
 
         .stat-icon.earnings {
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--success);
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
         }
 
         .stat-icon.balance {
-            background: rgba(102, 126, 234, 0.15);
-            color: var(--primary);
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
         }
 
         .stat-icon.team {
-            background: rgba(118, 75, 162, 0.15);
-            color: var(--secondary);
+            background: rgba(139, 92, 246, 0.2);
+            color: #8b5cf6;
         }
 
         .stat-icon.withdrawal {
-            background: rgba(245, 158, 11, 0.15);
-            color: var(--warning);
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
         }
 
-        /* Enhanced Team Members Section */
-        .team-section {
-            background: white;
+        /* Referral Message Section */
+        .referral-message-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
             padding: 35px;
-            border-radius: 25px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideUp 0.6s ease;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .section-header i {
+            font-size: 28px;
+            color: var(--primary);
+        }
+
+        .section-header h3 {
+            font-size: 24px;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .countdown-timer {
+            background: linear-gradient(135deg, rgba(254, 243, 199, 0.2) 0%, rgba(253, 230, 138, 0.2) 100%);
+            backdrop-filter: blur(20px);
+            padding: 25px;
+            border-radius: var(--radius);
+            text-align: center;
+            margin: 25px 0;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        .timer-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fbbf24;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .timer-display {
+            font-size: 36px;
+            font-weight: 900;
+            color: #fbbf24;
+            font-family: monospace;
+            letter-spacing: 3px;
+        }
+
+        .progress-container {
+            margin: 25px 0;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-success);
+            border-radius: 6px;
+            transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: loading 2s infinite;
+        }
+
+        @keyframes loading {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
             margin-bottom: 40px;
         }
 
-        .team-header {
+        .quick-action-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 25px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            color: white;
+            text-decoration: none;
+            animation: slideUp 0.6s ease;
+        }
+
+        .quick-action-btn:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: var(--shadow-lg);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .quick-action-btn i {
+            font-size: 36px;
+            color: var(--primary);
+        }
+
+        .quick-action-btn span {
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        /* Daily Bonus Card */
+        .daily-bonus-card {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(251, 191, 36, 0.2) 100%);
+            backdrop-filter: blur(20px);
+            padding: 30px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            animation: slideUp 0.6s ease;
+        }
+
+        .bonus-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
+        }
+
+        .bonus-amount {
+            font-size: 48px;
+            font-weight: 900;
+            color: #fbbf24;
+            text-shadow: 0 2px 10px rgba(245, 158, 11, 0.3);
+        }
+
+        .bonus-timer {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: right;
+        }
+
+        .bonus-description {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 25px;
+            font-size: 15px;
+        }
+
+        .bonus-range {
+            display: flex;
+            justify-content: space-between;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        /* Earnings Breakdown */
+        .earnings-breakdown {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 35px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideUp 0.6s ease;
+        }
+
+        .breakdown-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+        }
+
+        .breakdown-item {
+            padding: 25px;
+            border-radius: var(--radius);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .breakdown-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .breakdown-item.level1 {
+            background: rgba(16, 185, 129, 0.2);
+            border: 2px solid #10b981;
+        }
+
+        .breakdown-item.level2 {
+            background: rgba(102, 126, 234, 0.2);
+            border: 2px solid #667eea;
+        }
+
+        .breakdown-item.level3 {
+            background: rgba(139, 92, 246, 0.2);
+            border: 2px solid #8b5cf6;
+        }
+
+        .breakdown-item.total {
+            background: rgba(245, 158, 11, 0.2);
+            border: 2px solid #f59e0b;
+        }
+
+        .breakdown-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .breakdown-value {
+            font-size: 36px;
+            font-weight: 900;
+            margin-bottom: 5px;
+        }
+
+        .breakdown-item.level1 .breakdown-value {
+            color: #10b981;
+        }
+
+        .breakdown-item.level2 .breakdown-value {
+            color: #667eea;
+        }
+
+        .breakdown-item.level3 .breakdown-value {
+            color: #8b5cf6;
+        }
+
+        .breakdown-item.total .breakdown-value {
+            color: #f59e0b;
+        }
+
+        /* Team Members Section */
+        .team-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 35px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideUp 0.6s ease;
         }
 
         .team-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 25px;
+            margin-top: 25px;
         }
 
         .team-member-card {
-            background: white;
-            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
             padding: 25px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s;
-            border: 2px solid transparent;
-            position: relative;
-            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .team-member-card:hover {
             transform: translateY(-10px);
-            border-color: var(--primary);
-            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.15);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: var(--shadow);
         }
 
         .member-header {
@@ -715,7 +1192,8 @@
             height: 70px;
             border-radius: 50%;
             overflow: hidden;
-            border: 3px solid var(--primary);
+            border: 3px solid transparent;
+            background: var(--gradient);
         }
 
         .member-avatar img {
@@ -731,255 +1209,53 @@
         .member-name {
             font-size: 18px;
             font-weight: 700;
-            color: var(--dark);
             margin-bottom: 5px;
+            color: white;
         }
 
         .member-contact {
-            font-size: 14px;
-            color: var(--gray);
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 5px;
         }
 
-        .member-stats {
+        .member-details {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
-            margin: 20px 0;
+            margin-bottom: 20px;
         }
 
-        .stat-item {
+        .detail-item {
             text-align: center;
-            padding: 12px;
-            background: var(--light);
-            border-radius: 12px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
         }
 
-        .stat-label {
-            font-size: 12px;
-            color: var(--gray);
+        .detail-label {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
             margin-bottom: 5px;
         }
 
-        .stat-value {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--dark);
+        .detail-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .detail-value.earnings {
+            color: #10b981;
         }
 
         .member-actions {
             display: flex;
             gap: 10px;
-            margin-top: 20px;
-        }
-
-        .action-btn {
-            flex: 1;
-            padding: 10px;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .action-btn.whatsapp {
-            background: #25D366;
-            color: white;
-        }
-
-        .action-btn.message {
-            background: var(--primary);
-            color: white;
-        }
-
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Daily Bonus Section */
-        .daily-bonus-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 40px;
-            border-radius: 25px;
-            color: white;
-            margin-bottom: 40px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .daily-bonus-section::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
-            background-size: 50px 50px;
-            animation: moveBackground 20s linear infinite;
-            z-index: 0;
-        }
-
-        @keyframes moveBackground {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
-        }
-
-        .bonus-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .bonus-amount {
-            font-size: 60px;
-            font-weight: 900;
-            margin: 20px 0;
-            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .bonus-timer {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 30px;
-            font-family: monospace;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 15px;
-            border-radius: 15px;
-            display: inline-block;
-        }
-
-        /* Earnings Breakdown */
-        .earnings-breakdown {
-            background: white;
-            padding: 35px;
-            border-radius: 25px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
-            margin-bottom: 40px;
-        }
-
-        .breakdown-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .breakdown-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 25px;
-        }
-
-        .breakdown-item {
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-            transition: transform 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .breakdown-item:hover {
-            transform: scale(1.05);
-        }
-
-        .breakdown-item.level1 {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.2));
-            border: 2px solid var(--success);
-        }
-
-        .breakdown-item.level2 {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(102, 126, 234, 0.2));
-            border: 2px solid var(--primary);
-        }
-
-        .breakdown-item.level3 {
-            background: linear-gradient(135deg, rgba(118, 75, 162, 0.1), rgba(118, 75, 162, 0.2));
-            border: 2px solid var(--secondary);
-        }
-
-        .breakdown-item.total {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.2));
-            border: 2px solid var(--warning);
-        }
-
-        .breakdown-label {
-            font-size: 16px;
-            color: var(--dark);
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-
-        .breakdown-value {
-            font-size: 36px;
-            font-weight: 800;
-            margin-bottom: 10px;
-        }
-
-        .breakdown-item.level1 .breakdown-value {
-            color: var(--success);
-        }
-
-        .breakdown-item.level2 .breakdown-value {
-            color: var(--primary);
-        }
-
-        .breakdown-item.level3 .breakdown-value {
-            color: var(--secondary);
-        }
-
-        .breakdown-item.total .breakdown-value {
-            color: var(--warning);
-        }
-
-        /* Quick Actions */
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-
-        /* Action Buttons */
-        .action-buttons {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-
-        /* WhatsApp Float */
-        .whatsapp-float {
-            position: fixed;
-            bottom: 40px;
-            right: 40px;
-            width: 70px;
-            height: 70px;
-            background: #25D366;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 34px;
-            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
-            z-index: 1000;
-            transition: all 0.3s;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        .whatsapp-float:hover {
-            transform: scale(1.15) rotate(10deg);
-            box-shadow: 0 15px 35px rgba(37, 211, 102, 0.6);
         }
 
         /* Modals */
@@ -996,35 +1272,33 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
-            animation: fadeIn 0.3s ease-out;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
         .modal.active {
             display: flex;
+            opacity: 1;
         }
 
         .modal-content {
-            background: white;
-            border-radius: 30px;
+            background: rgba(31, 41, 55, 0.95);
+            backdrop-filter: blur(30px);
+            border-radius: var(--radius-xl);
             padding: 40px;
             max-width: 600px;
             width: 100%;
-            max-height: 85vh;
+            max-height: 80vh;
             overflow-y: auto;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-            animation: slideUpModal 0.4s ease-out;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
         }
 
-        @keyframes slideUpModal {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .modal.active .modal-content {
+            transform: scale(1);
         }
 
         .modal-header {
@@ -1038,8 +1312,12 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            color: var(--dark);
             font-size: 24px;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .close-btn {
@@ -1047,19 +1325,90 @@
             border: none;
             font-size: 28px;
             cursor: pointer;
-            color: var(--gray);
-            transition: color 0.3s;
+            color: rgba(255, 255, 255, 0.7);
+            transition: var(--transition);
             width: 40px;
             height: 40px;
-            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            border-radius: 50%;
         }
 
         .close-btn:hover {
             color: var(--danger);
-            background: var(--light);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .message-preview {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: var(--radius);
+            margin-bottom: 25px;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 14px;
+            line-height: 1.6;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .share-options {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            flex: 1;
+            min-width: 140px;
+        }
+
+        /* Team Modal */
+        .team-modal-content {
+            max-width: 1000px;
+        }
+
+        .team-list {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        /* Profile Modal */
+        .profile-modal-content {
+            max-width: 500px;
+        }
+
+        .profile-form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .profile-details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .profile-detail-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px;
+            border-radius: var(--radius);
+        }
+
+        .profile-detail-label {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .profile-detail-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
         }
 
         /* Notifications */
@@ -1068,225 +1417,254 @@
             top: 30px;
             right: 30px;
             padding: 20px 25px;
-            border-radius: 15px;
+            border-radius: var(--radius);
             color: white;
             font-weight: 600;
-            z-index: 2001;
-            animation: slideIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 3000;
             display: flex;
             align-items: center;
             gap: 15px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: var(--shadow);
             max-width: 400px;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
         }
 
         .notification.success {
-            background: linear-gradient(135deg, var(--success), #34d399);
+            background: rgba(16, 185, 129, 0.2);
+            border-color: rgba(16, 185, 129, 0.3);
         }
 
         .notification.error {
-            background: linear-gradient(135deg, var(--danger), #f87171);
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.3);
         }
 
         .notification.warning {
-            background: linear-gradient(135deg, var(--warning), #fbbf24);
+            background: rgba(245, 158, 11, 0.2);
+            border-color: rgba(245, 158, 11, 0.3);
         }
 
         .notification.info {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.3);
         }
 
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%) translateY(-100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0) translateY(0);
-                opacity: 1;
-            }
+        .notification i {
+            font-size: 22px;
         }
 
-        /* App Notification Badge */
-        .app-notification {
+        .notification.success i {
+            color: #10b981;
+        }
+
+        .notification.error i {
+            color: #ef4444;
+        }
+
+        .notification.warning i {
+            color: #f59e0b;
+        }
+
+        .notification.info i {
+            color: #3b82f6;
+        }
+
+        /* WhatsApp Float */
+        .whatsapp-float {
             position: fixed;
-            bottom: 120px;
+            bottom: 40px;
             right: 40px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            width: 70px;
+            height: 70px;
+            background: #25D366;
             color: white;
-            padding: 20px;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            z-index: 999;
-            animation: slideInRight 0.5s ease-out, float 6s ease-in-out infinite;
-            max-width: 300px;
-            backdrop-filter: blur(10px);
-            cursor: pointer;
-            transform: translateY(0);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
+            z-index: 1000;
+            transition: var(--transition);
+            animation: bounce 2s infinite;
         }
 
-        @keyframes slideInRight {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+        .whatsapp-float:hover {
+            transform: scale(1.2) rotate(10deg);
+            box-shadow: 0 15px 30px rgba(37, 211, 102, 0.6);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            bottom: 40px;
+            left: 40px;
+            z-index: 1000;
+        }
+
+        .theme-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .theme-btn:hover {
+            transform: rotate(30deg) scale(1.1);
+            background: rgba(255, 255, 255, 0.2);
         }
 
         /* Responsive */
         @media (max-width: 1200px) {
-            .team-grid {
-                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            .container {
+                max-width: 100%;
+                padding: 0 30px;
             }
         }
 
         @media (max-width: 992px) {
+            .login-card {
+                padding: 40px 30px;
+            }
+
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
-            
+
             .team-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            }
-            
-            .breakdown-grid {
                 grid-template-columns: repeat(2, 1fr);
+            }
+
+            .welcome-section {
+                flex-direction: column;
+                text-align: center;
             }
         }
 
         @media (max-width: 768px) {
             .login-card {
-                padding: 40px 25px;
+                padding: 30px 20px;
+                max-width: 95%;
             }
-            
+
+            .login-logo {
+                font-size: 28px;
+            }
+
             .stats-grid {
                 grid-template-columns: 1fr;
             }
-            
-            .welcome-section {
-                flex-direction: column;
-                text-align: center;
-            }
-            
+
             .team-grid {
                 grid-template-columns: 1fr;
             }
-            
-            .breakdown-grid {
-                grid-template-columns: 1fr;
-            }
-            
+
             .quick-actions {
                 grid-template-columns: 1fr;
             }
-            
-            .action-buttons {
-                grid-template-columns: 1fr;
-            }
-            
-            .daily-bonus-section {
+
+            .modal-content {
                 padding: 30px 20px;
+                max-width: 95%;
             }
-            
-            .bonus-amount {
-                font-size: 48px;
-            }
-            
+
             .whatsapp-float {
-                bottom: 30px;
-                right: 30px;
+                bottom: 20px;
+                right: 20px;
                 width: 60px;
                 height: 60px;
                 font-size: 28px;
             }
-            
-            .app-notification {
-                bottom: 100px;
-                right: 20px;
-                max-width: calc(100% - 40px);
+
+            .theme-toggle {
+                bottom: 20px;
+                left: 20px;
+            }
+
+            .theme-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+
+            .header-right {
+                gap: 15px;
+            }
+
+            .user-info .user-details {
+                display: none;
+            }
+
+            .profile-details-grid {
+                grid-template-columns: 1fr;
             }
         }
 
         @media (max-width: 480px) {
             .login-card {
-                padding: 30px 20px;
+                padding: 25px 15px;
             }
-            
-            .modal-content {
-                padding: 30px 20px;
-            }
-            
-            .notification {
-                left: 20px;
-                right: 20px;
-                max-width: none;
-            }
-            
-            .user-info {
+
+            .tabs {
                 flex-direction: column;
-                gap: 10px;
-                text-align: center;
+            }
+
+            .btn {
+                padding: 16px 24px;
+                font-size: 14px;
+            }
+
+            .share-options {
+                flex-direction: column;
+            }
+
+            .share-btn {
+                min-width: 100%;
             }
         }
-
-        /* Password Modal */
-        .password-form {
-            display: grid;
-            gap: 20px;
-        }
-
-        .password-strength {
-            height: 5px;
-            background: var(--gray-light);
-            border-radius: 3px;
-            margin-top: 5px;
-            overflow: hidden;
-        }
-
-        .strength-bar {
-            height: 100%;
-            width: 0%;
-            transition: width 0.3s;
-            border-radius: 3px;
-        }
-
-        .strength-weak { background: var(--danger); width: 33%; }
-        .strength-medium { background: var(--warning); width: 66%; }
-        .strength-strong { background: var(--success); width: 100%; }
     </style>
 </head>
+
 <body>
     <!-- Animated Background -->
     <div class="animated-bg"></div>
-    
-    <!-- Floating Particles -->
-    <div class="particles" id="particles"></div>
-    
-    <!-- Custom Pointer -->
-    <div class="pointer" id="customPointer"></div>
-    
+    <div class="particles" id="particlesContainer"></div>
+
+    <!-- Pointer Effects -->
+    <div class="pointer" id="mainPointer"></div>
+
     <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-overlay hidden" id="loadingOverlay">
         <div class="spinner"></div>
-        <div id="loadingMessage">Loading your account...</div>
+        <div class="loading-text" id="loadingMessage">Loading your account...</div>
     </div>
 
     <!-- Notification Container -->
     <div id="notificationContainer"></div>
 
-    <!-- App Notification -->
-    <div class="app-notification hidden" id="appNotification">
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <div style="font-size: 24px;">💰</div>
-            <div>
-                <strong>Refer & Earn Money!</strong>
-                <p style="font-size: 14px; opacity: 0.9; margin-top: 5px;">Invite friends and earn up to ₹1000!</p>
-            </div>
-        </div>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle">
+        <button class="theme-btn" id="themeToggle">
+            <i class="fas fa-palette"></i>
+        </button>
     </div>
 
     <!-- WhatsApp Float -->
@@ -1298,45 +1676,58 @@
     <div class="login-container" id="loginPage">
         <div class="login-card">
             <div class="login-logo">
-                <div class="logo-icon">
-                    <i class="fas fa-network-wired"></i>
-                </div>
-                <div class="logo-text">MultiConnect</div>
+                <i class="fas fa-network-wired"></i>
+                <span>MultiConnect</span>
             </div>
-            
-            <div id="loginError" class="notification error hidden" style="position: relative; top: 0; right: 0; margin-bottom: 20px;"></div>
-            
-            <div class="login-tabs">
-                <button class="tab-btn active" onclick="switchTab('phone')">Phone</button>
-                <button class="tab-btn" onclick="switchTab('email')">Email</button>
-                <button class="tab-btn" onclick="switchTab('referral')">Referral</button>
+
+            <div id="loginError" class="notification error hidden"></div>
+
+            <div class="tabs">
+                <button class="tab active" data-tab="phone" onclick="switchLoginTab('phone')">Phone</button>
+                <button class="tab" data-tab="email" onclick="switchLoginTab('email')">Email</button>
+                <button class="tab" data-tab="referral" onclick="switchLoginTab('referral')">Referral Code</button>
             </div>
-            
+
             <form id="loginForm">
                 <div class="form-group" id="phoneField">
-                    <input type="tel" id="phoneNumber" class="form-control" placeholder=" " pattern="[0-9]{10}" required>
-                    <label class="floating-label">Phone Number</label>
+                    <label for="phoneNumber"><i class="fas fa-phone"></i> Phone Number</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                        <input type="tel" id="phoneNumber" class="form-control"
+                            placeholder="Enter your 10-digit phone number" pattern="[0-9]{10}" required>
+                    </div>
                 </div>
-                
+
                 <div class="form-group hidden" id="emailField">
-                    <input type="email" id="email" class="form-control" placeholder=" ">
-                    <label class="floating-label">Email Address</label>
+                    <label for="email"><i class="fas fa-envelope"></i> Email Address</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" class="form-control" placeholder="Enter your email address">
+                    </div>
                 </div>
-                
+
                 <div class="form-group hidden" id="referralField">
-                    <input type="text" id="referralCode" class="form-control" placeholder=" ">
-                    <label class="floating-label">Referral Code</label>
+                    <label for="referralCode"><i class="fas fa-user-friends"></i> Referral Code</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-code"></i>
+                        <input type="text" id="referralCode" class="form-control"
+                            placeholder="Enter your referral code">
+                    </div>
                 </div>
-                
+
                 <div class="form-group">
-                    <input type="password" id="password" class="form-control" placeholder=" " required>
-                    <label class="floating-label">Password</label>
+                    <label for="password"><i class="fas fa-lock"></i> Password</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-key"></i>
+                        <input type="password" id="password" class="form-control" placeholder="Enter your password"
+                            required>
+                    </div>
                 </div>
-                
+
                 <div class="forgot-password">
-                    <a href="#" class="forgot-link" onclick="showForgotPasswordModal()">Forgot Password?</a>
+                    <a href="javascript:void(0)" onclick="showForgotPasswordModal()">Forgot Password?</a>
                 </div>
-                
+
                 <button type="button" class="btn btn-primary" onclick="login()">
                     <i class="fas fa-sign-in-alt"></i> Login to Account
                 </button>
@@ -1351,6 +1742,9 @@
                     <a href="tel:+919985943961" class="contact-item">
                         <i class="fas fa-phone"></i> Call: +91 9985943961
                     </a>
+                    <a href="mailto:earningsprogram777@gmail.com" class="contact-item">
+                        <i class="fas fa-envelope"></i> Email Support
+                    </a>
                 </div>
             </div>
         </div>
@@ -1360,28 +1754,30 @@
     <div class="dashboard hidden" id="dashboard">
         <!-- Header -->
         <header class="dashboard-header">
-            <div class="container">
-                <div class="header-content">
-                    <div class="header-left">
-                        <div class="logo">
-                            <i class="fas fa-network-wired"></i>
-                            <span>MultiConnect</span>
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="logo">
+                        <i class="fas fa-network-wired"></i>
+                        <span>MultiConnect</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="notification-bell" onclick="showNotifications()" id="notificationBell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-count hidden" id="notificationCount">0</span>
+                    </div>
+                    <div class="user-info" onclick="showProfileModal()">
+                        <div class="user-avatar" id="userAvatar">
+                            <!-- Profile image will be loaded here -->
+                        </div>
+                        <div class="user-details">
+                            <div class="user-name" id="userName">User</div>
+                            <div class="user-code" id="userReferralCode">REFCODE</div>
                         </div>
                     </div>
-                    <div class="header-right">
-                        <div class="user-info" onclick="showProfileModal()">
-                            <div class="user-avatar" id="userAvatar">
-                                <img id="userAvatarImg" src="" alt="Profile" onerror="this.style.display='none'; this.parentNode.innerHTML=this.parentNode.textContent">
-                            </div>
-                            <div>
-                                <div style="font-weight: 700;" id="userName">User</div>
-                                <div style="font-size: 13px; color: var(--gray);" id="userReferralCode">REFCODE</div>
-                            </div>
-                        </div>
-                        <button class="btn btn-outline" onclick="logout()" style="padding: 10px 20px;">
-                            <i class="fas fa-sign-out-alt"></i> Logout
-                        </button>
-                    </div>
+                    <button class="btn btn-outline btn-small" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
                 </div>
             </div>
         </header>
@@ -1393,10 +1789,11 @@
                 <div class="welcome-section">
                     <div class="welcome-text">
                         <h1>Welcome back, <span id="welcomeName">User</span>! 👋</h1>
-                        <p>Your MultiConnect account dashboard. Track earnings, team growth, and manage your account.</p>
+                        <p>Your MultiConnect account dashboard. Track earnings, team growth, and manage your account.
+                        </p>
                     </div>
                     <div class="referral-box">
-                        <div style="font-size: 15px; opacity: 0.9;">Your Referral Code</div>
+                        <div class="referral-label">Your Referral Code</div>
                         <div class="referral-code" id="dashboardReferralCode">REFCODE</div>
                         <button class="copy-btn" onclick="copyReferralCode()">
                             <i class="fas fa-copy"></i> Copy Code
@@ -1455,92 +1852,149 @@
                     </div>
                 </div>
 
-                <!-- Daily Bonus Section -->
-                <div class="daily-bonus-section" id="dailyBonusSection">
-                    <div class="bonus-content">
-                        <h2 style="margin-bottom: 20px;">🎁 Daily Bonus</h2>
-                        <div class="bonus-amount" id="dailyBonusAmount">₹0</div>
-                        <p style="margin-bottom: 20px;">Claim your daily bonus of ₹2-₹10!</p>
-                        <div class="bonus-timer" id="dailyBonusTimer">24:00:00</div>
-                        <button class="btn btn-warning" onclick="claimDailyBonus()" style="padding: 15px 30px; font-size: 18px;">
-                            <i class="fas fa-gift"></i> Claim Bonus
-                        </button>
+                <!-- Daily Bonus Card -->
+                <div class="daily-bonus-card">
+                    <div class="bonus-header">
+                        <div>
+                            <div class="bonus-amount" id="dailyBonusAmount">₹0</div>
+                            <div class="stat-label">Today's Bonus</div>
+                        </div>
+                        <div class="bonus-timer">
+                            <div>Next bonus in:</div>
+                            <div class="timer-display" id="dailyBonusTimer">23:59:59</div>
+                        </div>
                     </div>
+                    <div class="bonus-description">
+                        Claim your daily bonus! Earn between ₹2-₹10 every day. The amount changes daily.
+                    </div>
+                    <div class="bonus-range">
+                        <span>₹2</span>
+                        <span>₹10</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="dailyBonusProgress" style="width: 0%"></div>
+                    </div>
+                    <button class="btn btn-warning" onclick="claimDailyBonus()" style="margin-top: 20px; width: 100%;">
+                        <i class="fas fa-gift"></i> Claim Daily Bonus
+                    </button>
                 </div>
 
-                <!-- Team Members Section -->
-                <div class="team-section">
-                    <div class="team-header">
-                        <h2><i class="fas fa-users"></i> Team Members</h2>
-                        <span class="stat-label" id="totalTeamCount">0 members</span>
+                <!-- Referral Message Section -->
+                <div class="referral-message-section">
+                    <div class="section-header">
+                        <i class="fas fa-bullhorn"></i>
+                        <h3>Invite Friends & Earn</h3>
                     </div>
-                    <div class="team-grid" id="teamMembersGrid">
-                        <!-- Team members will be loaded here -->
+                    <p style="margin-bottom: 25px; color: rgba(255, 255, 255, 0.8);">
+                        Share your referral message and earn commission from 3 levels! 🚀
+                    </p>
+
+                    <!-- Special Offer Countdown -->
+                    <div class="countdown-timer">
+                        <div class="timer-title">⏰ LIMITED TIME OFFER</div>
+                        <div class="timer-display" id="countdownTimer">23:59:59</div>
+                        <div style="font-size: 14px; color: #fbbf24; margin-top: 12px;">
+                            Join 5 members in 1 week & get your money back!
+                        </div>
                     </div>
+
+                    <!-- Referral Progress -->
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>Weekly Referral Target</span>
+                            <span><span id="currentReferrals">0</span>/5 members</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="referralProgress" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-success" onclick="showReferralMessage()"
+                        style="margin-top: 25px; width: 100%;">
+                        <i class="fas fa-share-alt"></i> Share Referral Message
+                    </button>
                 </div>
 
                 <!-- Quick Actions -->
                 <div class="quick-actions">
-                    <button class="btn btn-primary" onclick="showReferralMessage()">
-                        <i class="fas fa-share-alt"></i> Invite Friends
-                    </button>
-                    <button class="btn btn-secondary" onclick="showWithdrawalModal()">
-                        <i class="fas fa-wallet"></i> Withdraw Money
-                    </button>
-                    <button class="btn btn-warning" onclick="showTeamModal()">
-                        <i class="fas fa-users"></i> View Team
-                    </button>
-                    <button class="btn btn-success" onclick="showChangePasswordModal()">
-                        <i class="fas fa-key"></i> Change Password
-                    </button>
+                    <a class="quick-action-btn" onclick="showReferralMessage()">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Invite Friends</span>
+                    </a>
+                    <a class="quick-action-btn" onclick="showWithdrawalModal()">
+                        <i class="fas fa-wallet"></i>
+                        <span>Withdraw Money</span>
+                    </a>
+                    <a class="quick-action-btn" onclick="showTeamModal()">
+                        <i class="fas fa-users"></i>
+                        <span>View Team</span>
+                    </a>
+                    <a class="quick-action-btn" onclick="showProfileModal()">
+                        <i class="fas fa-user-cog"></i>
+                        <span>Profile Settings</span>
+                    </a>
                 </div>
 
                 <!-- Earnings Breakdown -->
                 <div class="earnings-breakdown">
-                    <div class="breakdown-header">
-                        <h3><i class="fas fa-chart-pie"></i> Earnings Breakdown</h3>
-                        <button class="btn btn-outline" style="padding: 10px 20px;" onclick="explainEarningPlan()">
-                            <i class="fas fa-info-circle"></i> How It Works
-                        </button>
+                    <div class="section-header">
+                        <i class="fas fa-chart-pie"></i>
+                        <h3>Earnings Breakdown</h3>
                     </div>
                     <div class="breakdown-grid">
                         <div class="breakdown-item level1">
                             <div class="breakdown-label">Level 1 Earnings</div>
                             <div class="breakdown-value" id="level1Earnings">₹0</div>
-                            <div style="font-size: 14px;">₹100 per referral</div>
+                            <div style="font-size: 13px; color: rgba(255, 255, 255, 0.7);">₹100 per referral</div>
                         </div>
                         <div class="breakdown-item level2">
                             <div class="breakdown-label">Level 2 Earnings</div>
                             <div class="breakdown-value" id="level2Earnings">₹0</div>
-                            <div style="font-size: 14px;">₹50 per referral</div>
+                            <div style="font-size: 13px; color: rgba(255, 255, 255, 0.7);">₹50 per referral</div>
                         </div>
                         <div class="breakdown-item level3">
                             <div class="breakdown-label">Level 3 Earnings</div>
                             <div class="breakdown-value" id="level3Earnings">₹0</div>
-                            <div style="font-size: 14px;">₹50 per referral</div>
+                            <div style="font-size: 13px; color: rgba(255, 255, 255, 0.7);">₹50 per referral</div>
                         </div>
                         <div class="breakdown-item total">
                             <div class="breakdown-label">Total Earnings</div>
                             <div class="breakdown-value" id="totalEarningsBreakdown">₹0</div>
-                            <div style="font-size: 14px; opacity: 0.9;">Join 10 members earn ₹1000</div>
+                            <div style="font-size: 13px; color: rgba(255, 255, 255, 0.7);">Join 10 members earn ₹1000
+                            </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Team Members Section -->
+                <div class="team-section">
+                    <div class="section-header">
+                        <i class="fas fa-user-friends"></i>
+                        <h3>Your Team Members</h3>
+                    </div>
+                    <div class="team-grid" id="teamGrid">
+                        <!-- Team members will be loaded here dynamically -->
+                    </div>
+                </div>
+
                 <!-- Action Buttons -->
-                <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="shareAccountDetails()">
-                        <i class="fab fa-whatsapp"></i> Share on WhatsApp
-                    </button>
-                    <button class="btn btn-secondary" onclick="showWithdrawalModal()">
-                        <i class="fas fa-wallet"></i> Request Withdrawal
-                    </button>
-                    <button class="btn btn-outline" onclick="downloadStatement()">
-                        <i class="fas fa-download"></i> Download Statement
-                    </button>
-                    <button class="btn btn-outline" onclick="contactSupport()">
-                        <i class="fas fa-headset"></i> Contact Support
-                    </button>
+                <div class="quick-actions">
+                    <a class="quick-action-btn" onclick="shareAccountDetails()">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>Share on WhatsApp</span>
+                    </a>
+                    <a class="quick-action-btn" onclick="showWithdrawalModal()">
+                        <i class="fas fa-wallet"></i>
+                        <span>Request Withdrawal</span>
+                    </a>
+                    <a class="quick-action-btn" onclick="downloadStatement()">
+                        <i class="fas fa-download"></i>
+                        <span>Download Statement</span>
+                    </a>
+                    <a class="quick-action-btn" onclick="explainEarningPlan()">
+                        <i class="fas fa-info-circle"></i>
+                        <span>How It Works</span>
+                    </a>
                 </div>
 
                 <!-- Support Info -->
@@ -1570,11 +2024,12 @@
                 <h3><i class="fas fa-share-alt"></i> Share Referral Message</h3>
                 <button class="close-btn" onclick="closeModal('referralMessageModal')">&times;</button>
             </div>
-            <p style="margin-bottom: 16px; color: var(--gray);">Copy and share this message with your friends:</p>
+            <p style="margin-bottom: 20px; color: rgba(255, 255, 255, 0.8);">Copy and share this message with your
+                friends:</p>
             <div class="message-preview" id="referralMessagePreview">
                 Loading message...
             </div>
-            <div class="share-options" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 25px;">
+            <div class="share-options">
                 <button class="btn btn-success share-btn" onclick="shareViaWhatsApp()">
                     <i class="fab fa-whatsapp"></i> WhatsApp
                 </button>
@@ -1596,33 +2051,254 @@
                 <button class="close-btn" onclick="closeModal('withdrawalModal')">&times;</button>
             </div>
             <div class="form-group">
-                <label for="withdrawalAmount" style="display: block; margin-bottom: 8px; color: var(--dark);">Amount to Withdraw</label>
-                <input type="number" id="withdrawalAmount" class="form-control" placeholder="Enter amount" min="100" max="100000">
-                <small style="color: var(--gray);">Minimum withdrawal: ₹100</small>
+                <label for="withdrawalAmount">Amount to Withdraw</label>
+                <input type="number" id="withdrawalAmount" class="form-control" placeholder="Enter amount" min="100"
+                    step="100">
+                <small style="color: rgba(255, 255, 255, 0.6);">Minimum withdrawal: ₹100</small>
             </div>
             <div class="form-group">
-                <label for="bankDetails" style="display: block; margin-bottom: 8px; color: var(--dark);">Bank Details</label>
-                <textarea id="bankDetails" class="form-control" rows="3" placeholder="Account Number, IFSC, Name"></textarea>
+                <label for="bankDetails">Bank Details</label>
+                <textarea id="bankDetails" class="form-control" rows="3"
+                    placeholder="Account Number, IFSC, Account Holder Name"></textarea>
             </div>
             <div class="form-group">
-                <label for="upiId" style="display: block; margin-bottom: 8px; color: var(--dark);">UPI ID (Optional)</label>
+                <label for="upiId">UPI ID (Optional)</label>
                 <input type="text" id="upiId" class="form-control" placeholder="Enter your UPI ID">
             </div>
-            <button class="btn btn-primary" onclick="submitWithdrawalRequest()" style="width: 100%; padding: 15px;">
+            <button class="btn btn-primary" onclick="submitWithdrawalRequest()">
                 <i class="fas fa-paper-plane"></i> Submit Request
             </button>
         </div>
     </div>
 
-    <!-- Team Members Modal -->
+    <!-- Team Modal -->
     <div class="modal" id="teamModal">
-        <div class="modal-content">
+        <div class="modal-content team-modal-content">
             <div class="modal-header">
                 <h3><i class="fas fa-users"></i> Team Members</h3>
                 <button class="close-btn" onclick="closeModal('teamModal')">&times;</button>
             </div>
-            <div id="teamMembersList" style="max-height: 400px; overflow-y: auto; padding: 10px;">
+            <div class="team-list" id="teamMembersList">
                 Loading team members...
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content profile-modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-cog"></i> Profile Settings & Details</h3>
+                <button class="close-btn" onclick="closeModal('profileModal')">&times;</button>
+            </div>
+            <div class="profile-form">
+                <!-- Profile Picture Section -->
+                <div class="form-group">
+                    <label>Profile Picture</label>
+                    <div style="text-align: center; margin: 20px 0;">
+                        <div class="user-avatar" id="profileAvatar"
+                            style="width: 120px; height: 120px; margin: 0 auto; cursor: pointer; position: relative;">
+                            <!-- Profile image loaded from Google Sheets -->
+                        </div>
+                        <div id="profilePicStatus"
+                            style="font-size: 11px; color: rgba(255, 255, 255, 0.6); margin-top: 5px;">
+                            Click to change profile picture
+                        </div>
+                        <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
+                    </div>
+                </div>
+
+                <!-- Personal Details Section -->
+                <div class="section-header" style="margin: 25px 0 15px 0;">
+                    <i class="fas fa-id-card"></i>
+                    <h4 style="font-size: 16px;">Personal Information</h4>
+                </div>
+
+                <div class="profile-details-grid">
+                    <div class="profile-detail-item">
+                        <div class="profile-detail-label">User ID</div>
+                        <div class="profile-detail-value" id="profileUserId">-</div>
+                    </div>
+                    <div class="profile-detail-item">
+                        <div class="profile-detail-label">Account Status</div>
+                        <div class="profile-detail-value" id="profileStatus">-</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="changeName"><i class="fas fa-user"></i> Full Name</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="changeName" class="form-control" placeholder="Enter your full name">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="changePhone"><i class="fas fa-phone"></i> Phone Number</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                        <input type="tel" id="changePhone" class="form-control" placeholder="Enter your phone number">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="changeEmail"><i class="fas fa-envelope"></i> Email Address</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="changeEmail" class="form-control" placeholder="Enter your email">
+                    </div>
+                </div>
+
+                <!-- Referral Information -->
+                <div class="section-header" style="margin: 25px 0 15px 0;">
+                    <i class="fas fa-network-wired"></i>
+                    <h4 style="font-size: 16px;">Referral Information</h4>
+                </div>
+
+                <div class="profile-details-grid">
+                    <div class="profile-detail-item">
+                        <div class="profile-detail-label">Referral Code</div>
+                        <div class="profile-detail-value" id="profileReferralCode">-</div>
+                    </div>
+                    <div class="profile-detail-item">
+                        <div class="profile-detail-label">Referred By</div>
+                        <div class="profile-detail-value" id="profileReferredBy">-</div>
+                    </div>
+                    <div class="profile-detail-item">
+                        <div class="profile-detail-label">Team Name</div>
+                        <div class="profile-detail-value" id="profileTeamName">-</div>
+                    </div>
+                    <div class="profile-detail-item">
+                        <div class="profile-detail-label">Total Team</div>
+                        <div class="profile-detail-value" id="profileTotalTeam">0</div>
+                    </div>
+                </div>
+
+                <!-- Financial Information -->
+                <div class="section-header" style="margin: 25px 0 15px 0;">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <h4 style="font-size: 16px;">Financial Information</h4>
+                </div>
+
+                <div class="profile-details-grid">
+                    <div class="profile-detail-item">
+                        <div class="profile-detail-label">Initial Deposit</div>
+                        <div class="profile-detail-value" id="profileDeposit">₹0</div>
+                    </div>
+                    <div class="profile-detail-item">
+                        <div class="profile-detail-label">Total Bonuses</div>
+                        <div class="profile-detail-value" id="profileBonuses">₹0</div>
+                    </div>
+                    <div class="profile-detail-item">
+                        <div class="profile-detail-label">Account Balance</div>
+                        <div class="profile-detail-value" style="color: #10b981;" id="profileAccountBalance">₹0</div>
+                    </div>
+                    <div class="profile-detail-item">
+                        <div class="profile-detail-label">Total Withdrawal</div>
+                        <div class="profile-detail-value" id="profileTotalWithdrawal">₹0</div>
+                    </div>
+                    <div class="profile-detail-item">
+                        <div class="profile-detail-label">Payment Date</div>
+                        <div class="profile-detail-value" id="profilePaymentDate">-</div>
+                    </div>
+                    <div class="profile-detail-item">
+                        <div class="profile-detail-label">Daily Bonus</div>
+                        <div class="profile-detail-value" style="color: #f59e0b;" id="profileDailyBonus">₹0</div>
+                    </div>
+                </div>
+
+                <!-- Earnings Breakdown -->
+                <div class="section-header" style="margin: 25px 0 15px 0;">
+                    <i class="fas fa-chart-line"></i>
+                    <h4 style="font-size: 16px;">Earnings Breakdown</h4>
+                </div>
+
+                <div class="profile-details-grid" style="grid-template-columns: repeat(3, 1fr);">
+                    <div class="profile-detail-item" style="background: rgba(16, 185, 129, 0.1);">
+                        <div class="profile-detail-label">Level 1</div>
+                        <div class="profile-detail-value" style="color: #10b981;" id="profileLevel1">₹0</div>
+                    </div>
+                    <div class="profile-detail-item" style="background: rgba(102, 126, 234, 0.1);">
+                        <div class="profile-detail-label">Level 2</div>
+                        <div class="profile-detail-value" style="color: #667eea;" id="profileLevel2">₹0</div>
+                    </div>
+                    <div class="profile-detail-item" style="background: rgba(139, 92, 246, 0.1);">
+                        <div class="profile-detail-label">Level 3</div>
+                        <div class="profile-detail-value" style="color: #8b5cf6;" id="profileLevel3">₹0</div>
+                    </div>
+                    <div class="profile-detail-item" style="background: rgba(245, 158, 11, 0.1); grid-column: span 3;">
+                        <div class="profile-detail-label">Total Earnings</div>
+                        <div class="profile-detail-value" style="color: #f59e0b; font-size: 18px;"
+                            id="profileTotalEarnings">₹0</div>
+                    </div>
+                </div>
+
+                <!-- Lists Section -->
+                <div class="section-header" style="margin: 25px 0 15px 0;">
+                    <i class="fas fa-list"></i>
+                    <h4 style="font-size: 16px;">Bonus & Withdrawal History</h4>
+                </div>
+
+                <div class="profile-details-grid" style="grid-template-columns: 1fr;">
+                    <div class="profile-detail-item">
+                        <div class="profile-detail-label">Bonus List</div>
+                        <div class="profile-detail-value" style="font-size: 12px; max-height: 60px; overflow-y: auto;"
+                            id="profileBonusList">-</div>
+                    </div>
+                    <div class="profile-detail-item">
+                        <div class="profile-detail-label">Withdrawal List</div>
+                        <div class="profile-detail-value" style="font-size: 12px; max-height: 60px; overflow-y: auto;"
+                            id="profileWithdrawalList">-</div>
+                    </div>
+                </div>
+
+                <!-- Password Change Section -->
+                <div class="section-header" style="margin: 25px 0 15px 0;">
+                    <i class="fas fa-key"></i>
+                    <h4 style="font-size: 16px;">Change Password</h4>
+                </div>
+
+                <div class="form-group">
+                    <label for="currentPassword"><i class="fas fa-lock"></i> Current Password</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="currentPassword" class="form-control"
+                            placeholder="Enter current password">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="newPassword"><i class="fas fa-key"></i> New Password</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-key"></i>
+                        <input type="password" id="newPassword" class="form-control"
+                            placeholder="Enter new password (min. 6 characters)">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword"><i class="fas fa-check-circle"></i> Confirm Password</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-check-circle"></i>
+                        <input type="password" id="confirmPassword" class="form-control"
+                            placeholder="Confirm new password">
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="display: flex; gap: 15px; margin-top: 25px;">
+                    <button class="btn btn-primary" onclick="updateProfile()" style="flex: 2;">
+                        <i class="fas fa-save"></i> Save All Changes
+                    </button>
+                    <button class="btn btn-outline" onclick="requestPasswordReset()" style="flex: 1;">
+                        <i class="fas fa-key"></i> Reset Password
+                    </button>
+                </div>
+
+                <button class="btn btn-success" onclick="downloadCompleteProfile()"
+                    style="margin-top: 15px; width: 100%;">
+                    <i class="fas fa-download"></i> Download Complete Profile
+                </button>
             </div>
         </div>
     </div>
@@ -1634,78 +2310,85 @@
                 <h3><i class="fas fa-key"></i> Forgot Password</h3>
                 <button class="close-btn" onclick="closeModal('forgotPasswordModal')">&times;</button>
             </div>
-            <p style="margin-bottom: 20px; color: var(--gray);">Enter your phone number or email to reset your password:</p>
+            <p style="margin-bottom: 20px; color: rgba(255, 255, 255, 0.8);">
+                Enter your registered phone number or email to receive password reset instructions.
+            </p>
             <div class="form-group">
-                <input type="text" id="resetCredential" class="form-control" placeholder="Phone number or email">
+                <label for="forgotPhone">Phone Number or Email</label>
+                <input type="text" id="forgotPhone" class="form-control" placeholder="Enter phone number or email">
             </div>
-            <button class="btn btn-primary" onclick="requestPasswordReset()" style="width: 100%; padding: 15px;">
-                <i class="fas fa-paper-plane"></i> Send Password
+            <button class="btn btn-primary" onclick="sendPasswordReset()">
+                <i class="fas fa-paper-plane"></i> Send Reset Instructions
             </button>
-        </div>
-    </div>
-
-    <!-- Change Password Modal -->
-    <div class="modal" id="changePasswordModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-key"></i> Change Password</h3>
-                <button class="close-btn" onclick="closeModal('changePasswordModal')">&times;</button>
-            </div>
-            <div class="password-form">
-                <div class="form-group">
-                    <input type="password" id="currentPassword" class="form-control" placeholder="Current Password">
-                </div>
-                <div class="form-group">
-                    <input type="password" id="newPassword" class="form-control" placeholder="New Password" onkeyup="checkPasswordStrength()">
-                    <div class="password-strength">
-                        <div class="strength-bar" id="passwordStrength"></div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm New Password">
-                </div>
-                <button class="btn btn-primary" onclick="changePassword()" style="width: 100%; padding: 15px;">
-                    <i class="fas fa-save"></i> Change Password
-                </button>
+            <div
+                style="margin-top: 20px; padding: 15px; background: rgba(255, 255, 255, 0.05); border-radius: var(--radius);">
+                <p style="font-size: 12px; color: rgba(255, 255, 255, 0.6);">
+                    <i class="fas fa-info-circle"></i> Instructions will be sent via WhatsApp to +91 9985943961
+                </p>
             </div>
         </div>
     </div>
 
-    <!-- Profile Modal -->
-    <div class="modal" id="profileModal">
+    <!-- Earning Plan Modal -->
+    <div class="modal" id="earningPlanModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3><i class="fas fa-user-circle"></i> My Profile</h3>
-                <button class="close-btn" onclick="closeModal('profileModal')">&times;</button>
+                <h3><i class="fas fa-info-circle"></i> MultiConnect Earning Plan</h3>
+                <button class="close-btn" onclick="closeModal('earningPlanModal')">&times;</button>
             </div>
-            <div style="text-align: center; margin-bottom: 30px;">
-                <div class="user-avatar" style="width: 100px; height: 100px; margin: 0 auto 20px;">
-                    <img id="profileAvatarImg" src="" alt="Profile" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.parentNode.innerHTML=this.parentNode.textContent">
+            <div style="max-height: 500px; overflow-y: auto; padding-right: 10px;">
+                <h4 style="color: var(--primary); margin-bottom: 15px;">📊 3-Level Referral System:</h4>
+                <ul style="margin-left: 20px; margin-bottom: 25px; color: rgba(255, 255, 255, 0.9);">
+                    <li style="margin-bottom: 10px;"><strong>Level 1:</strong> Earn ₹100 for each direct referral</li>
+                    <li style="margin-bottom: 10px;"><strong>Level 2:</strong> Earn ₹50 for each referral by your team
+                    </li>
+                    <li style="margin-bottom: 10px;"><strong>Level 3:</strong> Earn ₹50 for each referral by level 2
+                        team</li>
+                </ul>
+
+                <h4 style="color: var(--primary); margin-bottom: 15px;">💰 Example Calculation:</h4>
+                <div
+                    style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: var(--radius); margin-bottom: 25px;">
+                    <p style="color: rgba(255, 255, 255, 0.9); margin-bottom: 15px;">If you refer 5 people (Level 1),
+                        and each refers 3 people (Level 2), and each of those refers 2 people (Level 3):</p>
+                    <ul style="margin-left: 20px; color: rgba(255, 255, 255, 0.9);">
+                        <li style="margin-bottom: 8px;">Level 1: 5 × ₹100 = ₹500</li>
+                        <li style="margin-bottom: 8px;">Level 2: 15 × ₹50 = ₹750</li>
+                        <li style="margin-bottom: 8px;">Level 3: 30 × ₹50 = ₹1500</li>
+                        <li style="font-weight: 700; color: var(--success);">Total Earnings: ₹2750</li>
+                    </ul>
                 </div>
-                <h3 id="profileName">Loading...</h3>
-                <p style="color: var(--gray);" id="profileEmail">Loading...</p>
+
+                <h4 style="color: var(--primary); margin-bottom: 15px;">🎁 Special Offers:</h4>
+                <div
+                    style="background: linear-gradient(135deg, rgba(254, 243, 199, 0.2) 0%, rgba(253, 230, 138, 0.2) 100%); padding: 20px; border-radius: var(--radius); margin-bottom: 25px;">
+                    <p style="color: #f59e0b; font-weight: 700; margin-bottom: 15px;">🔥 Exclusive Limited-Time Offers:
+                    </p>
+                    <ul style="margin-left: 20px; color: rgba(255, 255, 255, 0.9);">
+                        <li style="margin-bottom: 8px;">Join 5 members in 1 week → Get ₹299 back!</li>
+                        <li style="margin-bottom: 8px;">Join 10 members → Earn ₹1000 bonus!</li>
+                        <li style="margin-bottom: 8px;">Daily Bonus: Earn ₹2-₹10 every day!</li>
+                    </ul>
+                </div>
+
+                <div style="text-align: center; margin-top: 25px;">
+                    <button class="btn btn-success" onclick="closeModal('earningPlanModal'); showReferralMessage();">
+                        <i class="fas fa-share-alt"></i> Start Sharing Now!
+                    </button>
+                </div>
             </div>
-            <div style="background: var(--light); padding: 20px; border-radius: 15px; margin-bottom: 20px;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                    <span>Referral Code:</span>
-                    <strong id="profileReferralCode">-</strong>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                    <span>Phone:</span>
-                    <strong id="profilePhone">-</strong>
-                </div>
-                <div style="display: flex; justify-content: space-between;">
-                    <span>Member Since:</span>
-                    <strong id="profileJoinDate">-</strong>
-                </div>
+        </div>
+    </div>
+
+    <!-- Notifications Modal -->
+    <div class="modal" id="notificationsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-bell"></i> Notifications</h3>
+                <button class="close-btn" onclick="closeModal('notificationsModal')">&times;</button>
             </div>
-            <div style="display: grid; gap: 15px;">
-                <button class="btn btn-outline" onclick="closeModal('profileModal'); showChangePasswordModal();">
-                    <i class="fas fa-key"></i> Change Password
-                </button>
-                <button class="btn btn-primary" onclick="shareAccountDetails()">
-                    <i class="fas fa-share-alt"></i> Share Profile
-                </button>
+            <div id="notificationsList">
+                <!-- Notifications will be loaded here -->
             </div>
         </div>
     </div>
@@ -1713,198 +2396,273 @@
     <script>
         // Configuration
         const GOOGLE_SHEETS_URL = 'https://docs.google.com/spreadsheets/d/1ryioJmyKvWPp7anEu2P842ZPuM5dqCMlYppjXcfzN_E/gviz/tq?tqx=out:json&gid=0';
+        const SUPPORT_NUMBER = '919985943961';
+        const SUPPORT_EMAIL = 'earningsprogram777@gmail.com';
+
         let currentUser = null;
         let allUsers = [];
+        let notifications = [];
         let pointerColors = [
-            '#FF6B6B', '#4ECDC4', '#FFD166', '#06D6A0', '#118AB2',
-            '#073B4C', '#EF476F', '#FFD166', '#06D6A0', '#118AB2',
-            '#7209B7', '#3A86FF', '#FB5607', '#8338EC', '#FF006E'
+            '#667eea', '#764ba2', '#10b981', '#f59e0b', '#ef4444',
+            '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16', '#f97316',
+            '#f43f5e', '#8b5cf6', '#3b82f6', '#0ea5e9', '#06b6d4',
+            '#14b8a6', '#10b981', '#84cc16', '#eab308', '#f59e0b',
+            '#f97316', '#ef4444', '#ec4899', '#d946ef', '#a855f7'
         ];
         let currentPointerColor = 0;
+        let pointerTrails = [];
         let dailyBonusClaimed = false;
-        let notificationInterval;
+        let lastBonusClaimDate = null;
 
         // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            initParticles();
-            initCustomPointer();
-            initAppNotifications();
-            
+        document.addEventListener('DOMContentLoaded', function () {
+            initializeParticles();
+            initializePointerEffects();
+            initializeEventListeners();
+            initializeNotifications();
+            startCountdown();
+            startDailyBonusTimer();
+
+            // Check if user was previously logged in
+            const savedUser = localStorage.getItem('multiConnectUser');
+            if (savedUser) {
+                try {
+                    const user = JSON.parse(savedUser);
+                    if (user.timestamp && Date.now() - user.timestamp < 24 * 60 * 60 * 1000) {
+                        autoLogin(user);
+                    }
+                } catch (e) {
+                    console.error('Error loading saved user:', e);
+                }
+            }
+
+            // Show welcome notification
+            setTimeout(() => {
+                if (!currentUser) {
+                    showNotification('Welcome to MultiConnect! Login to start earning.', 'info');
+                }
+            }, 3000);
+        });
+
+        function initializeParticles() {
+            const container = document.getElementById('particlesContainer');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.width = `${Math.random() * 10 + 5}px`;
+                particle.style.height = particle.style.width;
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                particle.style.background = `rgba(255, 255, 255, ${Math.random() * 0.1})`;
+                particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                container.appendChild(particle);
+            }
+        }
+
+        function initializePointerEffects() {
+            const mainPointer = document.getElementById('mainPointer');
+            let lastX = 0;
+            let lastY = 0;
+            let lastTime = Date.now();
+
+            // Set initial pointer style
+            updatePointerStyle(mainPointer);
+
+            document.addEventListener('mousemove', (e) => {
+                // Update main pointer position
+                mainPointer.style.left = `${e.clientX - 10}px`;
+                mainPointer.style.top = `${e.clientY - 10}px`;
+
+                // Change color based on speed
+                const currentTime = Date.now();
+                const timeDiff = currentTime - lastTime;
+
+                if (timeDiff > 50) {
+                    const distance = Math.sqrt(
+                        Math.pow(e.clientX - lastX, 2) +
+                        Math.pow(e.clientY - lastY, 2)
+                    );
+                    const speed = distance / timeDiff;
+
+                    // Change color based on speed
+                    if (speed > 5) {
+                        currentPointerColor = (currentPointerColor + 1) % pointerColors.length;
+                        updatePointerStyle(mainPointer);
+                    }
+
+                    lastX = e.clientX;
+                    lastY = e.clientY;
+                    lastTime = currentTime;
+                }
+
+                // Create trail effect
+                createPointerTrail(e.clientX, e.clientY);
+            });
+
+            document.addEventListener('click', (e) => {
+                // Change color on click
+                currentPointerColor = (currentPointerColor + 1) % pointerColors.length;
+                updatePointerStyle(mainPointer);
+
+                // Create click effect
+                createClickEffect(e.clientX, e.clientY);
+            });
+
+            // Touch support
+            document.addEventListener('touchstart', (e) => {
+                const touch = e.touches[0];
+                mainPointer.style.left = `${touch.clientX - 10}px`;
+                mainPointer.style.top = `${touch.clientY - 10}px`;
+                mainPointer.style.opacity = '1';
+            });
+
+            document.addEventListener('touchmove', (e) => {
+                const touch = e.touches[0];
+                mainPointer.style.left = `${touch.clientX - 10}px`;
+                mainPointer.style.top = `${touch.clientY - 10}px`;
+                createPointerTrail(touch.clientX, touch.clientY);
+            });
+
+            document.addEventListener('touchend', () => {
+                mainPointer.style.opacity = '0.7';
+            });
+
+            // Animate trails
+            setInterval(animateTrails, 50);
+        }
+
+        function updatePointerStyle(pointer) {
+            pointer.style.background = pointerColors[currentPointerColor];
+            pointer.style.boxShadow = `0 0 10px ${pointerColors[currentPointerColor]}`;
+        }
+
+        function createPointerTrail(x, y) {
+            const trail = document.createElement('div');
+            trail.className = 'pointer-trail';
+            trail.style.left = `${x - 5}px`;
+            trail.style.top = `${y - 5}px`;
+            trail.style.background = pointerColors[currentPointerColor];
+            trail.style.opacity = '0.7';
+            trail.style.transform = `scale(${Math.random() * 0.5 + 0.5})`;
+            trail.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+            document.body.appendChild(trail);
+
+            pointerTrails.push({
+                element: trail,
+                createdAt: Date.now()
+            });
+
+            if (pointerTrails.length > 15) {
+                const oldTrail = pointerTrails.shift();
+                if (oldTrail.element.parentNode) {
+                    oldTrail.element.parentNode.removeChild(oldTrail.element);
+                }
+            }
+        }
+
+        function animateTrails() {
+            pointerTrails.forEach((trail, index) => {
+                const age = Date.now() - trail.createdAt;
+                const maxAge = 1000;
+                const progress = age / maxAge;
+
+                if (progress >= 1) {
+                    if (trail.element.parentNode) {
+                        trail.element.parentNode.removeChild(trail.element);
+                    }
+                } else {
+                    trail.element.style.opacity = (0.7 * (1 - progress)).toString();
+                    trail.element.style.transform = `scale(${0.5 + 0.5 * (1 - progress)}) translateY(${-progress * 20}px)`;
+                }
+            });
+
+            pointerTrails = pointerTrails.filter(trail => {
+                const age = Date.now() - trail.createdAt;
+                return age < 1000;
+            });
+        }
+
+        function createClickEffect(x, y) {
+            for (let i = 0; i < 3; i++) {
+                const ripple = document.createElement('div');
+                ripple.style.position = 'fixed';
+                ripple.style.left = `${x}px`;
+                ripple.style.top = `${y}px`;
+                ripple.style.width = '0px';
+                ripple.style.height = '0px';
+                ripple.style.borderRadius = '50%';
+                ripple.style.border = `2px solid ${pointerColors[currentPointerColor]}`;
+                ripple.style.opacity = '0.7';
+                ripple.style.transform = 'translate(-50%, -50%)';
+                ripple.style.zIndex = '9997';
+                ripple.style.pointerEvents = 'none';
+
+                document.body.appendChild(ripple);
+
+                setTimeout(() => {
+                    ripple.style.transition = 'all 0.5s ease-out';
+                    ripple.style.width = `${100 + i * 50}px`;
+                    ripple.style.height = `${100 + i * 50}px`;
+                    ripple.style.opacity = '0';
+                }, i * 100);
+
+                setTimeout(() => {
+                    if (ripple.parentNode) {
+                        ripple.parentNode.removeChild(ripple);
+                    }
+                }, 1000 + i * 100);
+            }
+        }
+
+        function initializeEventListeners() {
             // Enter key support for login
-            document.getElementById('password').addEventListener('keypress', function(e) {
+            document.getElementById('password').addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') {
                     login();
                 }
             });
-            
-            // Initialize daily bonus
-            initDailyBonus();
-            
-            // Start notification interval
-            startNotificationInterval();
-        });
 
-        function initParticles() {
-            const particlesContainer = document.getElementById('particles');
-            for (let i = 0; i < 50; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = `${Math.random() * 100}%`;
-                particle.style.animationDelay = `${Math.random() * 20}s`;
-                particle.style.width = `${Math.random() * 4 + 2}px`;
-                particle.style.height = particle.style.width;
-                particle.style.background = `rgba(255, 255, 255, ${Math.random() * 0.3 + 0.1})`;
-                particlesContainer.appendChild(particle);
-            }
+            // Theme toggle
+            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+
+            // Profile image click
+            document.getElementById('profileImageInput').addEventListener('change', uploadProfileImage);
+
+            // Initialize tabs
+            switchLoginTab('phone');
         }
 
-        function initCustomPointer() {
-            const pointer = document.getElementById('customPointer');
-            let mouseX = 0;
-            let mouseY = 0;
-            
-            document.addEventListener('mousemove', (e) => {
-                mouseX = e.clientX;
-                mouseY = e.clientY;
-                pointer.style.left = `${mouseX}px`;
-                pointer.style.top = `${mouseY}px`;
-                
-                // Change color on click
-                if (e.buttons === 1) {
-                    changePointerColor();
-                }
+        function switchLoginTab(tab) {
+            // Update tabs
+            document.querySelectorAll('.tab').forEach(t => {
+                t.classList.remove('active');
+                if (t.dataset.tab === tab) t.classList.add('active');
             });
-            
-            document.addEventListener('click', changePointerColor);
-            
-            // Touch support
-            document.addEventListener('touchstart', (e) => {
-                mouseX = e.touches[0].clientX;
-                mouseY = e.touches[0].clientY;
-                pointer.style.left = `${mouseX}px`;
-                pointer.style.top = `${mouseY}px`;
-                changePointerColor();
-            });
-            
-            document.addEventListener('touchmove', (e) => {
-                mouseX = e.touches[0].clientX;
-                mouseY = e.touches[0].clientY;
-                pointer.style.left = `${mouseX}px`;
-                pointer.style.top = `${mouseY}px`;
-            });
-        }
 
-        function changePointerColor() {
-            const pointer = document.getElementById('customPointer');
-            currentPointerColor = (currentPointerColor + 1) % pointerColors.length;
-            pointer.style.background = pointerColors[currentPointerColor];
-            pointer.style.boxShadow = `0 0 20px ${pointerColors[currentPointerColor]}`;
-        }
-
-        function initAppNotifications() {
-            // Show notification every 2 hours
-            setInterval(() => {
-                if (document.getElementById('dashboard').classList.contains('hidden')) {
-                    showAppNotification();
-                }
-            }, 2 * 60 * 60 * 1000);
-            
-            // Initial notification after 30 seconds
-            setTimeout(() => {
-                showAppNotification();
-            }, 30000);
-        }
-
-        function showAppNotification() {
-            const notification = document.getElementById('appNotification');
-            notification.classList.remove('hidden');
-            
-            // Auto hide after 10 seconds
-            setTimeout(() => {
-                notification.classList.add('hidden');
-            }, 10000);
-            
-            // Click to hide
-            notification.onclick = () => {
-                notification.classList.add('hidden');
-            };
-        }
-
-        function initDailyBonus() {
-            // Check if bonus was claimed today
-            const lastClaim = localStorage.getItem('dailyBonusLastClaim');
-            const today = new Date().toDateString();
-            
-            if (lastClaim === today) {
-                dailyBonusClaimed = true;
-                document.getElementById('dailyBonusAmount').textContent = '₹0';
-                document.getElementById('dailyBonusSection').style.opacity = '0.5';
-            } else {
-                // Generate random bonus amount
-                const bonusAmount = Math.floor(Math.random() * 9) + 2; // ₹2-₹10
-                document.getElementById('dailyBonusAmount').textContent = `₹${bonusAmount}`;
-            }
-            
-            // Start countdown timer
-            startBonusCountdown();
-        }
-
-        function startBonusCountdown() {
-            function updateTimer() {
-                const now = new Date();
-                const endOfDay = new Date(now);
-                endOfDay.setHours(23, 59, 59, 999);
-                
-                const diff = endOfDay - now;
-                
-                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-                
-                document.getElementById('dailyBonusTimer').textContent = 
-                    `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            }
-            
-            updateTimer();
-            setInterval(updateTimer, 1000);
-        }
-
-        function startNotificationInterval() {
-            const messages = [
-                "🎉 Refer friends and earn up to ₹1000!",
-                "💰 Daily bonus available! Claim now!",
-                "🚀 Join 5 members in 1 week & get your money back!",
-                "📈 Your team is growing! Check your earnings!",
-                "💎 New member joined your team!",
-                "🔥 Limited time offer! Don't miss out!"
-            ];
-            
-            notificationInterval = setInterval(() => {
-                if (!document.getElementById('dashboard').classList.contains('hidden')) {
-                    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-                    showNotification(randomMessage, 'info');
-                }
-            }, 300000); // Every 5 minutes
-        }
-
-        function switchTab(tab) {
-            // Update tab buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
             // Show/hide fields
-            document.getElementById('phoneField').classList.add('hidden');
-            document.getElementById('emailField').classList.add('hidden');
-            document.getElementById('referralField').classList.add('hidden');
-            
-            if (tab === 'phone') {
-                document.getElementById('phoneField').classList.remove('hidden');
-            } else if (tab === 'email') {
-                document.getElementById('emailField').classList.remove('hidden');
+            document.getElementById('phoneField').classList.toggle('hidden', tab !== 'phone');
+            document.getElementById('emailField').classList.toggle('hidden', tab !== 'email');
+            document.getElementById('referralField').classList.toggle('hidden', tab !== 'referral');
+
+            // Focus on active field
+            if (tab === 'phone') document.getElementById('phoneNumber').focus();
+            if (tab === 'email') document.getElementById('email').focus();
+            if (tab === 'referral') document.getElementById('referralCode').focus();
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+
+            if (currentTheme === 'dark') {
+                body.removeAttribute('data-theme');
+                body.style.background = 'var(--dark)';
+                showNotification('Light theme activated', 'info');
             } else {
-                document.getElementById('referralField').classList.remove('hidden');
+                body.setAttribute('data-theme', 'dark');
+                body.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                showNotification('Dark theme activated', 'info');
             }
         }
 
@@ -1913,17 +2671,19 @@
                 showLoading('Fetching data from Google Sheets...');
                 const response = await fetch(GOOGLE_SHEETS_URL);
                 const text = await response.text();
-                
+
                 // Remove the wrapper text from Google Sheets API
                 const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
                 const jsonData = JSON.parse(jsonText);
-                
+
                 // Map columns based on your sheet structure
-                allUsers = jsonData.table.rows.map(row => {
+                allUsers = jsonData.table.rows.map((row, index) => {
                     const cells = row.c;
                     return {
+                        id: index + 1,
                         name: cells[0]?.v || '',
                         phone: cells[1]?.v?.toString() || '',
+                        email: cells[22]?.v || '', // Column W (email)
                         password: cells[2]?.v?.toString() || '',
                         referralCode: cells[3]?.v || '',
                         referredBy: cells[4]?.v || '',
@@ -1942,11 +2702,12 @@
                         level3: parseFloat(cells[17]?.v) || 0,
                         totalEarnings: parseFloat(cells[18]?.v) || 0,
                         status: cells[19]?.v || '',
-                        profilePic: cells[20]?.v || '', // Column U - Profile Picture
-                        email: cells[21]?.v || '' // Column W - Email
+                        profilePic: cells[20]?.v || '', // Column U (profile pic)
+                        dailyBonus: parseFloat(cells[23]?.v) || 0,
+                        lastBonusDate: cells[24]?.v || ''
                     };
                 });
-                
+
                 hideLoading();
                 return allUsers;
             } catch (error) {
@@ -1958,77 +2719,73 @@
         }
 
         async function login() {
+            const activeTab = document.querySelector('.tab.active').dataset.tab;
             const phone = document.getElementById('phoneNumber').value.trim();
-            const email = document.getElementById('email').value.trim();
+            const email = document.getElementById('email').value.trim().toLowerCase();
             const referralCode = document.getElementById('referralCode').value.trim().toUpperCase();
             const password = document.getElementById('password').value.trim();
-            
+
             // Clear previous errors
             hideNotification('loginError');
-            
+
             // Basic validation
             if (!password) {
                 showNotification('Password is required', 'error', 'loginError');
                 return;
             }
-            
-            const activeTab = document.querySelector('.tab-btn.active').textContent.toLowerCase();
-            let credential = '';
-            
-            if (activeTab.includes('phone')) {
-                credential = phone;
-                if (!credential) {
-                    showNotification('Phone number is required', 'error', 'loginError');
-                    return;
-                }
-            } else if (activeTab.includes('email')) {
-                credential = email;
-                if (!credential) {
-                    showNotification('Email is required', 'error', 'loginError');
-                    return;
-                }
-            } else {
-                credential = referralCode;
-                if (!credential) {
-                    showNotification('Referral code is required', 'error', 'loginError');
-                    return;
-                }
+
+            if (activeTab === 'phone' && !phone) {
+                showNotification('Phone number is required', 'error', 'loginError');
+                return;
             }
-            
+
+            if (activeTab === 'email' && !email) {
+                showNotification('Email is required', 'error', 'loginError');
+                return;
+            }
+
+            if (activeTab === 'referral' && !referralCode) {
+                showNotification('Referral code is required', 'error', 'loginError');
+                return;
+            }
+
             // Fetch data
             const users = await fetchSheetData();
-            
+
             if (users.length === 0) {
                 showNotification('No user data found. Please check the Google Sheet connection.', 'error', 'loginError');
                 return;
             }
-            
+
             // Find user
             let user = null;
-            if (activeTab.includes('phone')) {
-                user = users.find(u => u.phone === credential);
-            } else if (activeTab.includes('email')) {
-                user = users.find(u => u.email.toLowerCase() === credential.toLowerCase());
+            if (activeTab === 'phone') {
+                user = users.find(u => u.phone === phone);
+            } else if (activeTab === 'email') {
+                user = users.find(u => u.email === email);
             } else {
-                user = users.find(u => u.referralCode === credential);
+                user = users.find(u => u.referralCode === referralCode);
             }
-            
+
             // Check password
             if (user) {
-                // Check password (in real app, this should be secure)
                 if (user.password === password) {
                     currentUser = user;
+
+                    // Save user to localStorage for auto-login
+                    localStorage.setItem('multiConnectUser', JSON.stringify({
+                        ...user,
+                        timestamp: Date.now()
+                    }));
+
                     showNotification(`Welcome back, ${user.name}!`, 'success');
-                    // Celebrate login
-                    confetti({
-                        particleCount: 100,
-                        spread: 70,
-                        origin: { y: 0.6 }
-                    });
-                    
+
                     setTimeout(() => {
                         showDashboard();
                         updateDashboard(user);
+                        checkDailyBonusStatus();
+                        loadTeamMembers();
+                        scheduleNotifications();
                     }, 1000);
                 } else {
                     showNotification('Invalid password. Please try again.', 'error', 'loginError');
@@ -2038,70 +2795,107 @@
             }
         }
 
+        function autoLogin(savedUser) {
+            currentUser = savedUser;
+            showDashboard();
+            updateDashboard(savedUser);
+            checkDailyBonusStatus();
+            loadTeamMembers();
+            scheduleNotifications();
+        }
+
         function showDashboard() {
             document.getElementById('loginPage').classList.add('hidden');
             document.getElementById('dashboard').classList.remove('hidden');
-            
-            // Trigger animations
-            document.querySelectorAll('.stat-card, .team-member-card, .breakdown-item').forEach(card => {
-                card.style.animation = 'fadeIn 0.8s ease-out';
-            });
+            setTimeout(() => {
+                document.getElementById('dashboard').classList.add('loaded');
+            }, 100);
         }
 
         function updateDashboard(user) {
             // Update user info
             document.getElementById('userName').textContent = user.name;
-            const avatar = document.getElementById('userAvatarImg');
-            if (user.profilePic) {
-                avatar.src = user.profilePic;
-                avatar.style.display = 'block';
-            }
-            document.getElementById('userAvatar').textContent = user.name.charAt(0).toUpperCase();
             document.getElementById('userReferralCode').textContent = user.referralCode;
             document.getElementById('welcomeName').textContent = user.name;
             document.getElementById('dashboardReferralCode').textContent = user.referralCode;
-            
+
+            // Update profile picture
+            updateProfilePicture(user);
+
             // Update stats
             document.getElementById('totalEarnings').textContent = formatCurrency(user.totalEarnings);
             document.getElementById('accountBalance').textContent = formatCurrency(user.accountBalance);
             document.getElementById('teamMembers').textContent = user.totalTeam;
             document.getElementById('totalWithdrawal').textContent = formatCurrency(user.totalWithdrawal);
-            
+
             // Update breakdown
             document.getElementById('level1Earnings').textContent = formatCurrency(user.level1);
             document.getElementById('level2Earnings').textContent = formatCurrency(user.level2);
             document.getElementById('level3Earnings').textContent = formatCurrency(user.level3);
             document.getElementById('totalEarningsBreakdown').textContent = formatCurrency(user.totalEarnings);
-            
-            // Update team members
-            updateTeamMembers(user.referralCode);
-            
-            // Update profile modal data
-            document.getElementById('profileName').textContent = user.name;
-            document.getElementById('profileEmail').textContent = user.email || 'Not provided';
-            document.getElementById('profileReferralCode').textContent = user.referralCode;
-            document.getElementById('profilePhone').textContent = user.phone;
-            document.getElementById('profileJoinDate').textContent = user.paymentDate || '-';
-            const profileAvatar = document.getElementById('profileAvatarImg');
+
+            // Update referral progress
+            const referralCount = user.totalTeam || 0;
+            const progressPercentage = Math.min(100, (referralCount / 5) * 100);
+            document.getElementById('currentReferrals').textContent = referralCount;
+            document.getElementById('referralProgress').style.width = `${progressPercentage}%`;
+
+            // Update daily bonus
+            updateDailyBonusDisplay();
+
+            // Load team members
+            loadTeamMembers();
+        }
+
+        function updateProfilePicture(user) {
+            const avatar = document.getElementById('userAvatar');
+            const profileAvatar = document.getElementById('profileAvatar');
+
             if (user.profilePic) {
-                profileAvatar.src = user.profilePic;
-                profileAvatar.style.display = 'block';
+                const img = document.createElement('img');
+                img.src = user.profilePic;
+                img.alt = user.name;
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'cover';
+
+                avatar.innerHTML = '';
+                avatar.appendChild(img.cloneNode(true));
+
+                profileAvatar.innerHTML = '';
+                profileAvatar.appendChild(img);
+            } else {
+                avatar.innerHTML = user.name.charAt(0).toUpperCase();
+                avatar.style.background = getRandomGradient();
+
+                profileAvatar.innerHTML = user.name.charAt(0).toUpperCase();
+                profileAvatar.style.background = getRandomGradient();
             }
         }
 
-        function updateTeamMembers(referralCode) {
-            const teamMembers = allUsers.filter(user => user.referredBy === referralCode);
-            const teamGrid = document.getElementById('teamMembersGrid');
-            const totalTeamCount = document.getElementById('totalTeamCount');
-            
-            totalTeamCount.textContent = `${teamMembers.length} members`;
-            
+        function getRandomGradient() {
+            const gradients = [
+                'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'
+            ];
+            return gradients[Math.floor(Math.random() * gradients.length)];
+        }
+
+        function loadTeamMembers() {
+            if (!currentUser) return;
+
+            const teamGrid = document.getElementById('teamGrid');
+            const teamMembers = allUsers.filter(user => user.referredBy === currentUser.referralCode);
+
             if (teamMembers.length === 0) {
                 teamGrid.innerHTML = `
-                    <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
-                        <i class="fas fa-users" style="font-size: 60px; color: var(--gray-light); margin-bottom: 20px;"></i>
-                        <h3 style="color: var(--gray); margin-bottom: 10px;">No team members yet</h3>
-                        <p style="color: var(--gray);">Start referring friends to build your team!</p>
+                    <div style="text-align: center; padding: 40px; color: rgba(255, 255, 255, 0.5);">
+                        <i class="fas fa-user-friends" style="font-size: 48px; margin-bottom: 20px;"></i>
+                        <h3>No team members yet</h3>
+                        <p>Start inviting friends to build your team!</p>
                         <button class="btn btn-primary" onclick="showReferralMessage()" style="margin-top: 20px;">
                             <i class="fas fa-share-alt"></i> Invite Friends
                         </button>
@@ -2109,14 +2903,15 @@
                 `;
                 return;
             }
-            
+
             teamGrid.innerHTML = teamMembers.map(member => `
                 <div class="team-member-card">
                     <div class="member-header">
                         <div class="member-avatar">
-                            <img src="${member.profilePic || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(member.name) + '&background=667eea&color=fff&size=128'}" 
-                                 alt="${member.name}" 
-                                 onerror="this.src='https://ui-avatars.com/api/?name=' + encodeURIComponent('${member.name}') + '&background=667eea&color=fff&size=128'">
+                            ${member.profilePic ?
+                    `<img src="${member.profilePic}" alt="${member.name}">` :
+                    `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: ${getRandomGradient()}; color: white; font-weight: bold; font-size: 24px;">${member.name.charAt(0)}</div>`
+                }
                         </div>
                         <div class="member-info">
                             <div class="member-name">${member.name}</div>
@@ -2126,24 +2921,22 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="member-stats">
-                        <div class="stat-item">
-                            <div class="stat-label">Earnings</div>
-                            <div class="stat-value">${formatCurrency(member.totalEarnings)}</div>
+                    <div class="member-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Earnings</div>
+                            <div class="detail-value earnings">${formatCurrency(member.totalEarnings)}</div>
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-label">Joined</div>
-                            <div class="stat-value">${member.paymentDate || '-'}</div>
+                        <div class="detail-item">
+                            <div class="detail-label">Joined</div>
+                            <div class="detail-value">${member.paymentDate || '-'}</div>
                         </div>
                     </div>
-                    
                     <div class="member-actions">
-                        <button class="action-btn whatsapp" onclick="messageMember('${member.phone}', '${member.name}')">
+                        <button class="btn btn-success btn-small" onclick="messageMember('${member.phone}', '${member.name}')" style="flex: 1;">
                             <i class="fab fa-whatsapp"></i> Message
                         </button>
-                        <button class="action-btn message" onclick="viewMemberDetails('${member.referralCode}')">
-                            <i class="fas fa-eye"></i> View
+                        <button class="btn btn-outline btn-small" onclick="callMember('${member.phone}')">
+                            <i class="fas fa-phone"></i>
                         </button>
                     </div>
                 </div>
@@ -2151,178 +2944,90 @@
         }
 
         function messageMember(phone, name) {
-            const message = encodeURIComponent(`Hi ${name}, how are you doing? This is your team leader from MultiConnect.`);
+            const message = encodeURIComponent(
+                `Hi ${name}! 👋\n\n` +
+                `This is ${currentUser.name} from your MultiConnect team.\n` +
+                `Just checking in to see how you're doing with the earning program!\n\n` +
+                `Need any help or have questions?\n` +
+                `Let's grow together! 💪`
+            );
             window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
         }
 
-        function viewMemberDetails(referralCode) {
-            const member = allUsers.find(u => u.referralCode === referralCode);
-            if (member) {
-                showNotification(`Viewing ${member.name}'s details`, 'info');
-                // In a real app, you might want to show a modal with detailed member info
-                const message = `
-                    👤 *Member Details*
-                    ----------------
-                    Name: ${member.name}
-                    Phone: ${member.phone}
-                    Email: ${member.email || 'Not provided'}
-                    Referral Code: ${member.referralCode}
-                    Join Date: ${member.paymentDate || '-'}
-                    Earnings: ${formatCurrency(member.totalEarnings)}
-                    Team Size: ${member.totalTeam}
-                    Status: ${member.status || 'Active'}
-                `;
-                alert(message);
+        function callMember(phone) {
+            window.open(`tel:${phone}`, '_blank');
+        }
+
+        function checkDailyBonusStatus() {
+            if (!currentUser) return;
+
+            const today = new Date().toDateString();
+            lastBonusClaimDate = currentUser.lastBonusDate;
+
+            if (lastBonusClaimDate === today) {
+                dailyBonusClaimed = true;
+                document.getElementById('dailyBonusAmount').textContent = formatCurrency(currentUser.dailyBonus || 0);
+                document.getElementById('dailyBonusProgress').style.width = '100%';
+            } else {
+                dailyBonusClaimed = false;
+                const randomBonus = Math.floor(Math.random() * 9) + 2; // ₹2-₹10
+                document.getElementById('dailyBonusAmount').textContent = formatCurrency(randomBonus);
+                document.getElementById('dailyBonusProgress').style.width = '0%';
             }
         }
 
         function claimDailyBonus() {
+            if (!currentUser) return;
+
             if (dailyBonusClaimed) {
-                showNotification('You have already claimed your daily bonus today!', 'warning');
+                showNotification('Daily bonus already claimed today!', 'warning');
                 return;
             }
-            
+
             const bonusAmount = parseInt(document.getElementById('dailyBonusAmount').textContent.replace('₹', ''));
-            if (bonusAmount > 0) {
-                // Update user's balance
-                currentUser.accountBalance += bonusAmount;
-                currentUser.totalEarnings += bonusAmount;
-                
-                // Save to localStorage
-                localStorage.setItem('dailyBonusLastClaim', new Date().toDateString());
-                
-                // Update UI
-                document.getElementById('accountBalance').textContent = formatCurrency(currentUser.accountBalance);
-                document.getElementById('totalEarnings').textContent = formatCurrency(currentUser.totalEarnings);
-                document.getElementById('dailyBonusSection').style.opacity = '0.5';
-                dailyBonusClaimed = true;
-                
-                // Celebrate
-                confetti({
-                    particleCount: 150,
-                    spread: 100,
-                    origin: { y: 0.6 }
-                });
-                
-                showNotification(`🎉 Daily bonus of ₹${bonusAmount} claimed!`, 'success');
-                
-                // Send WhatsApp notification
-                const message = encodeURIComponent(
-                    `💰 *Daily Bonus Claimed*\n\n` +
-                    `👤 *Name:* ${currentUser.name}\n` +
-                    `📱 *Phone:* ${currentUser.phone}\n` +
-                    `🔖 *Referral Code:* ${currentUser.referralCode}\n` +
-                    `💵 *Bonus Amount:* ${formatCurrency(bonusAmount)}\n` +
-                    `🏦 *New Balance:* ${formatCurrency(currentUser.accountBalance)}\n` +
-                    `📅 *Date:* ${new Date().toLocaleDateString()}`
-                );
-                
-                window.open(`https://wa.me/919985943961?text=${message}`, '_blank');
-            }
-        }
 
-        function showForgotPasswordModal() {
-            openModal('forgotPasswordModal');
-        }
+            // Update local user data
+            currentUser.dailyBonus = (currentUser.dailyBonus || 0) + bonusAmount;
+            currentUser.accountBalance = (currentUser.accountBalance || 0) + bonusAmount;
+            currentUser.totalEarnings = (currentUser.totalEarnings || 0) + bonusAmount;
+            currentUser.lastBonusDate = new Date().toDateString();
 
-        function requestPasswordReset() {
-            const credential = document.getElementById('resetCredential').value.trim();
-            if (!credential) {
-                showNotification('Please enter your phone number or email', 'error');
-                return;
-            }
-            
-            // Find user
-            const user = allUsers.find(u => u.phone === credential || u.email === credential);
-            if (!user) {
-                showNotification('User not found. Please check your credentials.', 'error');
-                return;
-            }
-            
-            // Send password via WhatsApp
+            // Update display
+            document.getElementById('dailyBonusAmount').textContent = formatCurrency(bonusAmount);
+            document.getElementById('dailyBonusProgress').style.width = '100%';
+            document.getElementById('accountBalance').textContent = formatCurrency(currentUser.accountBalance);
+            document.getElementById('totalEarnings').textContent = formatCurrency(currentUser.totalEarnings);
+
+            dailyBonusClaimed = true;
+
+            // Show success message
+            showNotification(`🎉 Daily bonus of ${formatCurrency(bonusAmount)} claimed!`, 'success');
+
+            // Send WhatsApp notification
             const message = encodeURIComponent(
-                `🔑 *Password Recovery Request*\n\n` +
-                `👤 *Name:* ${user.name}\n` +
-                `📱 *Phone:* ${user.phone}\n` +
-                `📧 *Email:* ${user.email || 'Not provided'}\n` +
-                `🔖 *Referral Code:* ${user.referralCode}\n` +
-                `🔐 *Password:* ${user.password}\n\n` +
-                `If you didn't request this, please ignore this message.`
+                `💰 *Daily Bonus Claimed!*\n\n` +
+                `👤 User: ${currentUser.name}\n` +
+                `📱 Phone: ${currentUser.phone}\n` +
+                `🔖 Referral: ${currentUser.referralCode}\n` +
+                `🎁 Bonus Amount: ${formatCurrency(bonusAmount)}\n` +
+                `📅 Date: ${new Date().toLocaleDateString()}\n\n` +
+                `New Balance: ${formatCurrency(currentUser.accountBalance)}`
             );
-            
-            window.open(`https://wa.me/919985943961?text=${message}`, '_blank');
-            showNotification('Password recovery request sent via WhatsApp');
-            closeModal('forgotPasswordModal');
+
+            window.open(`https://wa.me/${SUPPORT_NUMBER}?text=${message}`, '_blank');
         }
 
-        function showChangePasswordModal() {
-            openModal('changePasswordModal');
-        }
+        function updateDailyBonusDisplay() {
+            if (!currentUser) return;
 
-        function checkPasswordStrength() {
-            const password = document.getElementById('newPassword').value;
-            const strengthBar = document.getElementById('passwordStrength');
-            
-            let strength = 0;
-            if (password.length >= 8) strength++;
-            if (/[A-Z]/.test(password)) strength++;
-            if (/[0-9]/.test(password)) strength++;
-            if (/[^A-Za-z0-9]/.test(password)) strength++;
-            
-            strengthBar.className = 'strength-bar';
-            if (strength <= 1) {
-                strengthBar.classList.add('strength-weak');
-            } else if (strength <= 2) {
-                strengthBar.classList.add('strength-medium');
+            const bonusDisplay = document.getElementById('dailyBonusAmount');
+            if (!dailyBonusClaimed) {
+                const randomBonus = Math.floor(Math.random() * 9) + 2;
+                bonusDisplay.textContent = formatCurrency(randomBonus);
+                bonusDisplay.style.animation = 'pulse 2s infinite';
             } else {
-                strengthBar.classList.add('strength-strong');
+                bonusDisplay.style.animation = 'none';
             }
-        }
-
-        function changePassword() {
-            const currentPassword = document.getElementById('currentPassword').value;
-            const newPassword = document.getElementById('newPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            
-            if (!currentPassword || !newPassword || !confirmPassword) {
-                showNotification('Please fill all fields', 'error');
-                return;
-            }
-            
-            if (currentPassword !== currentUser.password) {
-                showNotification('Current password is incorrect', 'error');
-                return;
-            }
-            
-            if (newPassword !== confirmPassword) {
-                showNotification('New passwords do not match', 'error');
-                return;
-            }
-            
-            if (newPassword.length < 6) {
-                showNotification('Password must be at least 6 characters', 'error');
-                return;
-            }
-            
-            // Send password change request via WhatsApp
-            const message = encodeURIComponent(
-                `🔑 *Password Change Request*\n\n` +
-                `👤 *Name:* ${currentUser.name}\n` +
-                `📱 *Phone:* ${currentUser.phone}\n` +
-                `🔖 *Referral Code:* ${currentUser.referralCode}\n` +
-                `📧 *Email:* ${currentUser.email || 'Not provided'}\n` +
-                `🔐 *Current Password:* ${currentPassword}\n` +
-                `🔐 *New Password:* ${newPassword}\n\n` +
-                `Please update my password in the system.`
-            );
-            
-            window.open(`https://wa.me/919985943961?text=${message}`, '_blank');
-            showNotification('Password change request sent via WhatsApp');
-            closeModal('changePasswordModal');
-        }
-
-        function showProfileModal() {
-            openModal('profileModal');
         }
 
         function showReferralMessage() {
@@ -2347,12 +3052,14 @@ Why Join Us? 🚀
 ✅ *Skill Development:* Enhance your communication & data handling skills.
 ✅ *Transparent Payouts:* Get paid reliably.
 ✅ *Dedicated Support:* We're here to guide you.
+✅ *Daily Bonus:* Earn ₹2-₹10 every day!
 
 💸 *How You Can Earn:*
 -----------------------------
 1. Refer friends for direct earnings.
 2. Build a team for recurring bonus income.
 3. Earn extra bonuses based on your performance.
+4. Claim daily bonus every day!
 
 💰 *Referral Bonus Structure:*
 -----------------------------
@@ -2373,10 +3080,12 @@ Join using your Referral Code: *${currentUser.referralCode}*
 📞 Let's grow together and earn daily! Join our WhatsApp Group for tips & updates:
 https://chat.whatsapp.com/E94BX4hBsFM4GpvQx5FBEW
 
-📞 WHATSAPP CHANNEL:
+📱 WHATSAPP CHANNEL:
 https://whatsapp.com/channel/0029VbC2lLdK0IBag1Y3WC0s
 
-*Special Offer:* Join 5 members in 1 week & get your money back! 💰
+*Special Offers:*
+1. Join 5 members in 1 week & get your money back! 💰
+2. Daily bonus of ₹2-₹10 every day! 🎁
 
 Don't miss out on this opportunity! ✨`;
 
@@ -2432,7 +3141,7 @@ Don't miss out on this opportunity! ✨`;
             }
 
             document.getElementById('withdrawalAmount').max = balance;
-            document.getElementById('withdrawalAmount').value = balance;
+            document.getElementById('withdrawalAmount').value = Math.min(balance, 1000);
             openModal('withdrawalModal');
         }
 
@@ -2460,7 +3169,7 @@ Don't miss out on this opportunity! ✨`;
                 `💰 *Withdrawal Request*\n\n` +
                 `👤 *Name:* ${currentUser.name}\n` +
                 `📱 *Phone:* ${currentUser.phone}\n` +
-                `📧 *Email:* ${currentUser.email || 'Not provided'}\n` +
+                `📧 *Email:* ${currentUser.email || 'N/A'}\n` +
                 `🔖 *Referral Code:* ${currentUser.referralCode}\n` +
                 `💵 *Amount:* ${formatCurrency(amount)}\n` +
                 `🏦 *Bank Details:* ${bankDetails || 'N/A'}\n` +
@@ -2469,55 +3178,307 @@ Don't miss out on this opportunity! ✨`;
                 `Please process my withdrawal request.`
             );
 
-            window.open(`https://wa.me/919985943961?text=${message}`, '_blank');
+            window.open(`https://wa.me/${SUPPORT_NUMBER}?text=${message}`, '_blank');
             showNotification('Withdrawal request submitted via WhatsApp');
             closeModal('withdrawalModal');
         }
 
         function showTeamModal() {
             if (!currentUser) return;
-            updateTeamMembersList(currentUser.referralCode);
+
+            const teamMembers = allUsers.filter(user => user.referredBy === currentUser.referralCode);
+            const teamList = document.getElementById('teamMembersList');
+
+            if (teamMembers.length === 0) {
+                teamList.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: rgba(255, 255, 255, 0.5);">
+                        <i class="fas fa-user-friends" style="font-size: 48px; margin-bottom: 20px;"></i>
+                        <h3>No team members yet</h3>
+                        <p>Start inviting friends to build your team!</p>
+                        <button class="btn btn-primary" onclick="closeModal('teamModal'); showReferralMessage();" style="margin-top: 20px;">
+                            <i class="fas fa-share-alt"></i> Invite Friends
+                        </button>
+                    </div>
+                `;
+            } else {
+                teamList.innerHTML = `
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+                        ${teamMembers.map(member => `
+                            <div style="background: rgba(255, 255, 255, 0.05); border-radius: var(--radius); padding: 20px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                                    <div style="width: 50px; height: 50px; border-radius: 50%; overflow: hidden; background: ${getRandomGradient()}; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                                        ${member.profilePic ?
+                        `<img src="${member.profilePic}" alt="${member.name}" style="width: 100%; height: 100%; object-fit: cover;">` :
+                        member.name.charAt(0)
+                    }
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 700; font-size: 16px;">${member.name}</div>
+                                        <div style="font-size: 12px; color: rgba(255, 255, 255, 0.7);">${member.phone}</div>
+                                    </div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px;">
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 11px; color: rgba(255, 255, 255, 0.5);">Earnings</div>
+                                        <div style="font-size: 14px; font-weight: 600; color: #10b981;">${formatCurrency(member.totalEarnings)}</div>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <div style="font-size: 11px; color: rgba(255, 255, 255, 0.5);">Joined</div>
+                                        <div style="font-size: 14px; font-weight: 600;">${member.paymentDate || '-'}</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 10px;">
+                                    <button class="btn btn-success btn-small" onclick="messageMember('${member.phone}', '${member.name}')" style="flex: 1;">
+                                        <i class="fab fa-whatsapp"></i> Message
+                                    </button>
+                                    <button class="btn btn-outline btn-small" onclick="callMember('${member.phone}')">
+                                        <i class="fas fa-phone"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div style="text-align: center; margin-top: 25px; padding: 20px; background: rgba(255, 255, 255, 0.05); border-radius: var(--radius);">
+                        <div style="font-size: 16px; font-weight: 700; margin-bottom: 10px;">Team Summary</div>
+                        <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 15px;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 12px; color: rgba(255, 255, 255, 0.7);">Total Members</div>
+                                <div style="font-size: 24px; font-weight: 900; color: var(--primary);">${teamMembers.length}</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 12px; color: rgba(255, 255, 255, 0.7);">Total Earnings</div>
+                                <div style="font-size: 24px; font-weight: 900; color: #10b981;">${formatCurrency(teamMembers.reduce((sum, m) => sum + (m.totalEarnings || 0), 0))}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
             openModal('teamModal');
         }
 
-        function updateTeamMembersList(referralCode) {
-            const teamMembers = allUsers.filter(user => user.referredBy === referralCode);
-            const teamList = document.getElementById('teamMembersList');
-            
-            if (teamMembers.length === 0) {
-                teamList.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 40px;">No team members yet.</p>';
+        function showProfileModal() {
+            if (!currentUser) return;
+
+            // Fill form fields
+            document.getElementById('changeName').value = currentUser.name || '';
+            document.getElementById('changePhone').value = currentUser.phone || '';
+            document.getElementById('changeEmail').value = currentUser.email || '';
+
+            // Update all profile details
+            updateProfileDetails();
+
+            // Add click handler to profile avatar
+            const profileAvatar = document.getElementById('profileAvatar');
+            profileAvatar.onclick = () => document.getElementById('profileImageInput').click();
+
+            openModal('profileModal');
+        }
+
+        function updateProfileDetails() {
+            if (!currentUser) return;
+
+            // Personal Information
+            document.getElementById('profileUserId').textContent = currentUser.id || '-';
+            document.getElementById('profileStatus').textContent = currentUser.status || 'Active';
+
+            // Referral Information
+            document.getElementById('profileReferralCode').textContent = currentUser.referralCode || '-';
+            document.getElementById('profileReferredBy').textContent = currentUser.referredBy || 'Direct';
+            document.getElementById('profileTeamName').textContent = currentUser.teamName || '-';
+            document.getElementById('profileTotalTeam').textContent = currentUser.totalTeam || 0;
+
+            // Financial Information
+            document.getElementById('profileDeposit').textContent = formatCurrency(currentUser.deposit || 0);
+            document.getElementById('profileBonuses').textContent = formatCurrency(currentUser.bonuses || 0);
+            document.getElementById('profileAccountBalance').textContent = formatCurrency(currentUser.accountBalance || 0);
+            document.getElementById('profileTotalWithdrawal').textContent = formatCurrency(currentUser.totalWithdrawal || 0);
+            document.getElementById('profilePaymentDate').textContent = currentUser.paymentDate || '-';
+            document.getElementById('profileDailyBonus').textContent = formatCurrency(currentUser.dailyBonus || 0);
+
+            // Earnings Breakdown
+            document.getElementById('profileLevel1').textContent = formatCurrency(currentUser.level1 || 0);
+            document.getElementById('profileLevel2').textContent = formatCurrency(currentUser.level2 || 0);
+            document.getElementById('profileLevel3').textContent = formatCurrency(currentUser.level3 || 0);
+            document.getElementById('profileTotalEarnings').textContent = formatCurrency(currentUser.totalEarnings || 0);
+
+            // Lists
+            document.getElementById('profileBonusList').textContent = currentUser.bonusList || 'No bonuses yet';
+            document.getElementById('profileWithdrawalList').textContent = currentUser.withdrawalsList || 'No withdrawals yet';
+        }
+
+        function uploadProfileImage() {
+            const input = document.getElementById('profileImageInput');
+            const file = input.files[0];
+
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                showNotification('Please select an image file', 'error');
                 return;
             }
-            
-            teamList.innerHTML = `
-                <div style="display: grid; gap: 15px;">
-                    ${teamMembers.map(member => `
-                        <div style="display: flex; align-items: center; gap: 15px; padding: 20px; background: var(--light); border-radius: 15px;">
-                            <img src="${member.profilePic || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(member.name) + '&background=667eea&color=fff'}" 
-                                 style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;"
-                                 onerror="this.src='https://ui-avatars.com/api/?name=' + encodeURIComponent('${member.name}') + '&background=667eea&color=fff'">
-                            <div style="flex: 1;">
-                                <div style="font-weight: 700; margin-bottom: 5px;">${member.name}</div>
-                                <div style="font-size: 13px; color: var(--gray); margin-bottom: 5px;">
-                                    <i class="fas fa-phone"></i> ${member.phone}
-                                </div>
-                                <div style="display: flex; gap: 10px; font-size: 12px;">
-                                    <span>Earnings: ${formatCurrency(member.totalEarnings)}</span>
-                                    <span>Joined: ${member.paymentDate || '-'}</span>
-                                </div>
-                            </div>
-                            <button class="btn btn-success" onclick="messageMember('${member.phone}', '${member.name}')" style="padding: 8px 12px; font-size: 12px;">
-                                <i class="fab fa-whatsapp"></i>
-                            </button>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
+
+            if (file.size > 5 * 1024 * 1024) {
+                showNotification('Image size should be less than 5MB', 'error');
+                return;
+            }
+
+            showLoading('Uploading profile picture...');
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const base64Image = e.target.result;
+
+                // Send image upload request via WhatsApp
+                const message = encodeURIComponent(
+                    `🖼️ *Profile Picture Update*\n\n` +
+                    `👤 User: ${currentUser.name}\n` +
+                    `📱 Phone: ${currentUser.phone}\n` +
+                    `🔖 Referral Code: ${currentUser.referralCode}\n\n` +
+                    `Please update my profile picture.`
+                );
+
+                window.open(`https://wa.me/${SUPPORT_NUMBER}?text=${message}`, '_blank');
+
+                // Update local preview
+                const avatar = document.getElementById('userAvatar');
+                const profileAvatar = document.getElementById('profileAvatar');
+
+                avatar.innerHTML = '';
+                profileAvatar.innerHTML = '';
+
+                const img = document.createElement('img');
+                img.src = base64Image;
+                img.alt = currentUser.name;
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'cover';
+
+                avatar.appendChild(img.cloneNode(true));
+                profileAvatar.appendChild(img);
+
+                hideLoading();
+                showNotification('Profile picture update request sent!', 'success');
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function updateProfile() {
+            const name = document.getElementById('changeName').value.trim();
+            const phone = document.getElementById('changePhone').value.trim();
+            const email = document.getElementById('changeEmail').value.trim();
+            const currentPassword = document.getElementById('currentPassword').value.trim();
+            const newPassword = document.getElementById('newPassword').value.trim();
+            const confirmPassword = document.getElementById('confirmPassword').value.trim();
+
+            // Validate name
+            if (!name) {
+                showNotification('Name is required', 'error');
+                return;
+            }
+
+            // Validate phone
+            if (!phone || phone.length !== 10) {
+                showNotification('Valid 10-digit phone number is required', 'error');
+                return;
+            }
+
+            // Validate email
+            if (email && !isValidEmail(email)) {
+                showNotification('Valid email is required', 'error');
+                return;
+            }
+
+            let message = `📝 *Profile Update Request*\n\n` +
+                `👤 User: ${currentUser.name}\n` +
+                `🔖 Referral Code: ${currentUser.referralCode}\n\n` +
+                `*Changes Requested:*\n` +
+                `👤 Name: ${currentUser.name} → ${name}\n` +
+                `📱 Phone: ${currentUser.phone} → ${phone}\n` +
+                `📧 Email: ${currentUser.email || 'N/A'} → ${email || 'N/A'}\n\n`;
+
+            // Check if changing password
+            if (newPassword) {
+                if (currentPassword !== currentUser.password) {
+                    showNotification('Current password is incorrect', 'error');
+                    return;
+                }
+
+                if (newPassword !== confirmPassword) {
+                    showNotification('New passwords do not match', 'error');
+                    return;
+                }
+
+                if (newPassword.length < 6) {
+                    showNotification('New password must be at least 6 characters', 'error');
+                    return;
+                }
+
+                message += `\n*Password Change:*\nNew Password: ${newPassword}\n`;
+            }
+
+            message += `\nPlease update my profile details.`;
+
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/${SUPPORT_NUMBER}?text=${encodedMessage}`, '_blank');
+
+            // Update local data
+            currentUser.name = name;
+            currentUser.phone = phone;
+            currentUser.email = email;
+
+            // Update display
+            updateDashboard(currentUser);
+
+            showNotification('Profile update request sent!', 'success');
+            closeModal('profileModal');
+        }
+
+        function showForgotPasswordModal() {
+            openModal('forgotPasswordModal');
+        }
+
+        function sendPasswordReset() {
+            const identifier = document.getElementById('forgotPhone').value.trim();
+
+            if (!identifier) {
+                showNotification('Please enter phone number or email', 'error');
+                return;
+            }
+
+            const message = encodeURIComponent(
+                `🔐 *Password Reset Request*\n\n` +
+                `I forgot my password. Please send password for:\n\n` +
+                `📱 Phone/Email: ${identifier}\n\n` +
+                `Please send password to this number.`
+            );
+
+            window.open(`https://wa.me/${SUPPORT_NUMBER}?text=${message}`, '_blank');
+
+            showNotification('Password reset request sent! Check WhatsApp.', 'success');
+            closeModal('forgotPasswordModal');
+        }
+
+        function requestPasswordReset() {
+            const message = encodeURIComponent(
+                `🔐 *Password Reset Request*\n\n` +
+                `User: ${currentUser.name}\n` +
+                `Phone: ${currentUser.phone}\n` +
+                `Email: ${currentUser.email || 'N/A'}\n` +
+                `Referral Code: ${currentUser.referralCode}\n\n` +
+                `I forgot my password. Please send password to: ${currentUser.phone}\n\n` +
+                `Please send password pleasee`
+            );
+
+            window.open(`https://wa.me/${SUPPORT_NUMBER}?text=${message}`, '_blank');
+
+            showNotification('Password reset request sent!', 'success');
+            closeModal('profileModal');
         }
 
         function explainEarningPlan() {
-            // Similar to previous implementation
-            showNotification('Earning plan explanation coming soon!', 'info');
+            openModal('earningPlanModal');
         }
 
         function shareAccountDetails() {
@@ -2527,11 +3488,12 @@ Don't miss out on this opportunity! ✨`;
                 `🏆 *My MultiConnect Account*\n\n` +
                 `👤 *Name:* ${currentUser.name}\n` +
                 `📱 *Phone:* ${currentUser.phone}\n` +
-                `📧 *Email:* ${currentUser.email || 'Not provided'}\n` +
+                `📧 *Email:* ${currentUser.email || 'N/A'}\n` +
                 `🔖 *Referral Code:* ${currentUser.referralCode}\n` +
                 `💰 *Earnings:* ${formatCurrency(currentUser.totalEarnings)}\n` +
                 `🏦 *Balance:* ${formatCurrency(currentUser.accountBalance)}\n` +
-                `👥 *Team Members:* ${currentUser.totalTeam}\n\n` +
+                `👥 *Team Members:* ${currentUser.totalTeam}\n` +
+                `🎁 *Daily Bonus:* ${formatCurrency(currentUser.dailyBonus || 0)}\n\n` +
                 `*Join using my code and let's earn together!*`
             );
 
@@ -2541,84 +3503,255 @@ Don't miss out on this opportunity! ✨`;
 
         function downloadStatement() {
             if (!currentUser) return;
-            
+
             const statement = `
-                MultiConnect Account Statement
-                Generated on: ${new Date().toLocaleDateString()}
-                
-                Account Details:
-                ----------------
-                Name: ${currentUser.name}
-                Phone: ${currentUser.phone}
-                Email: ${currentUser.email || 'Not provided'}
-                Referral Code: ${currentUser.referralCode}
-                Referred By: ${currentUser.referredBy || 'Direct'}
-                Team Name: ${currentUser.teamName || '-'}
-                Payment Date: ${currentUser.paymentDate || '-'}
-                
-                Financial Summary:
-                -----------------
-                Initial Deposit: ${formatCurrency(currentUser.deposit)}
-                Bonuses: ${formatCurrency(currentUser.bonuses)}
-                Earnings: ${formatCurrency(currentUser.earnings)}
-                Total Earnings: ${formatCurrency(currentUser.totalEarnings)}
-                Account Balance: ${formatCurrency(currentUser.accountBalance)}
-                Total Withdrawal: ${formatCurrency(currentUser.totalWithdrawal)}
-                
-                Breakdown:
-                ----------
-                Level 1 Earnings: ${formatCurrency(currentUser.level1)}
-                Level 2 Earnings: ${formatCurrency(currentUser.level2)}
-                Level 3 Earnings: ${formatCurrency(currentUser.level3)}
-                
-                Team Stats:
-                -----------
-                Total Team Members: ${currentUser.totalTeam}
-                
-                Status: ${currentUser.status || 'Active'}
+MultiConnect Account Statement
+Generated on: ${new Date().toLocaleDateString()}
+
+Account Details:
+----------------
+Name: ${currentUser.name}
+Phone: ${currentUser.phone}
+Email: ${currentUser.email || 'N/A'}
+Referral Code: ${currentUser.referralCode}
+Referred By: ${currentUser.referredBy || 'Direct'}
+Team Name: ${currentUser.teamName || '-'}
+Payment Date: ${currentUser.paymentDate || '-'}
+
+Financial Summary:
+------------------
+Initial Deposit: ${formatCurrency(currentUser.deposit)}
+Bonuses: ${formatCurrency(currentUser.bonuses)}
+Earnings: ${formatCurrency(currentUser.earnings)}
+Total Earnings: ${formatCurrency(currentUser.totalEarnings)}
+Account Balance: ${formatCurrency(currentUser.accountBalance)}
+Total Withdrawal: ${formatCurrency(currentUser.totalWithdrawal)}
+Daily Bonus: ${formatCurrency(currentUser.dailyBonus || 0)}
+
+Breakdown:
+----------
+Level 1 Earnings: ${formatCurrency(currentUser.level1)}
+Level 2 Earnings: ${formatCurrency(currentUser.level2)}
+Level 3 Earnings: ${formatCurrency(currentUser.level3)}
+
+Team Stats:
+-----------
+Total Team Members: ${currentUser.totalTeam}
+
+Status: ${currentUser.status || 'Active'}
+
+This statement is generated for informational purposes.
+For official statement, contact support.
             `;
 
             const blob = new Blob([statement], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `MultiConnect_Statement_${currentUser.referralCode}.txt`;
+            a.download = `MultiConnect_Statement_${currentUser.referralCode}_${new Date().toISOString().split('T')[0]}.txt`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-            
+
             showNotification('Statement downloaded successfully!');
         }
 
-        function contactSupport() {
-            window.open('https://wa.me/919985943961', '_blank');
+        function downloadCompleteProfile() {
+            if (!currentUser) return;
+
+            const profileData = `
+MultiConnect - Complete User Profile
+====================================
+Generated on: ${new Date().toLocaleString()}
+
+📋 PERSONAL INFORMATION
+-----------------------
+User ID: ${currentUser.id}
+Name: ${currentUser.name}
+Phone: ${currentUser.phone}
+Email: ${currentUser.email || 'Not provided'}
+Status: ${currentUser.status || 'Active'}
+
+🔗 REFERRAL INFORMATION
+-----------------------
+Referral Code: ${currentUser.referralCode}
+Referred By: ${currentUser.referredBy || 'Direct'}
+Team Name: ${currentUser.teamName || '-'}
+Total Team Members: ${currentUser.totalTeam}
+
+💰 FINANCIAL INFORMATION
+------------------------
+Initial Deposit: ${formatCurrency(currentUser.deposit || 0)}
+Total Bonuses: ${formatCurrency(currentUser.bonuses || 0)}
+Account Balance: ${formatCurrency(currentUser.accountBalance || 0)}
+Total Withdrawal: ${formatCurrency(currentUser.totalWithdrawal || 0)}
+Daily Bonus: ${formatCurrency(currentUser.dailyBonus || 0)}
+Payment Date: ${currentUser.paymentDate || '-'}
+
+📊 EARNINGS BREAKDOWN
+---------------------
+Level 1 Earnings: ${formatCurrency(currentUser.level1 || 0)}
+Level 2 Earnings: ${formatCurrency(currentUser.level2 || 0)}
+Level 3 Earnings: ${formatCurrency(currentUser.level3 || 0)}
+Total Earnings: ${formatCurrency(currentUser.totalEarnings || 0)}
+
+📜 BONUS HISTORY
+----------------
+${currentUser.bonusList || 'No bonuses recorded'}
+
+💳 WITHDRAWAL HISTORY
+---------------------
+${currentUser.withdrawalsList || 'No withdrawals recorded'}
+
+📅 ACCOUNT SUMMARY
+------------------
+Profile Picture: ${currentUser.profilePic ? 'Available' : 'Not set'}
+Last Bonus Date: ${currentUser.lastBonusDate || 'Never'}
+Total Earnings: ${formatCurrency(currentUser.totalEarnings || 0)}
+Available Balance: ${formatCurrency(currentUser.accountBalance || 0)}
+
+---
+This is an auto-generated profile summary.
+For official documents, contact support.
+            `;
+
+            const blob = new Blob([profileData], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `MultiConnect_Profile_${currentUser.referralCode}_${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showNotification('Complete profile downloaded successfully!', 'success');
+        }
+
+        function showNotifications() {
+            const notificationsList = document.getElementById('notificationsList');
+
+            if (notifications.length === 0) {
+                notificationsList.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: rgba(255, 255, 255, 0.5);">
+                        <i class="fas fa-bell-slash" style="font-size: 48px; margin-bottom: 20px;"></i>
+                        <h3>No notifications</h3>
+                        <p>You're all caught up!</p>
+                    </div>
+                `;
+            } else {
+                notificationsList.innerHTML = notifications.map(notification => `
+                    <div style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                        <div style="display: flex; align-items: flex-start; gap: 10px;">
+                            <div style="color: ${notification.type === 'success' ? '#10b981' : notification.type === 'error' ? '#ef4444' : notification.type === 'warning' ? '#f59e0b' : '#3b82f6'};">
+                                <i class="fas fa-${notification.icon || 'info-circle'}"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600; margin-bottom: 5px;">${notification.title}</div>
+                                <div style="font-size: 14px; color: rgba(255, 255, 255, 0.7);">${notification.message}</div>
+                                <div style="font-size: 12px; color: rgba(255, 255, 255, 0.5); margin-top: 5px;">${notification.time}</div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            openModal('notificationsModal');
+        }
+
+        function initializeNotifications() {
+            // Initial notifications
+            notifications = [
+                {
+                    title: 'Welcome to MultiConnect!',
+                    message: 'Start earning by referring friends and claiming daily bonuses.',
+                    type: 'info',
+                    icon: 'rocket',
+                    time: 'Just now'
+                },
+                {
+                    title: 'Daily Bonus Available',
+                    message: 'Claim your daily bonus of ₹2-₹10 every day!',
+                    type: 'success',
+                    icon: 'gift',
+                    time: 'Today'
+                },
+                {
+                    title: 'Refer & Earn',
+                    message: 'Invite 5 friends this week and get ₹299 back!',
+                    type: 'warning',
+                    icon: 'users',
+                    time: 'This week'
+                }
+            ];
+
+            updateNotificationCount();
+        }
+
+        function scheduleNotifications() {
+            // Schedule daily notifications
+            setInterval(() => {
+                if (currentUser && !document.hidden) {
+                    const notificationMessages = [
+                        "💰 Don't forget to claim your daily bonus!",
+                        "👥 Refer friends and earn more!",
+                        "🎯 You're close to reaching your weekly target!",
+                        "🚀 Your team is growing! Check your earnings.",
+                        "💡 Tip: Share your referral code on social media!"
+                    ];
+
+                    const randomMessage = notificationMessages[Math.floor(Math.random() * notificationMessages.length)];
+                    showNotification(randomMessage, 'info');
+
+                    // Add to notifications list
+                    notifications.unshift({
+                        title: 'Reminder',
+                        message: randomMessage,
+                        type: 'info',
+                        icon: 'bell',
+                        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    });
+
+                    updateNotificationCount();
+                }
+            }, 3600000); // Every hour
+        }
+
+        function updateNotificationCount() {
+            const countElement = document.getElementById('notificationCount');
+            countElement.textContent = notifications.length;
+            countElement.classList.toggle('hidden', notifications.length === 0);
         }
 
         function logout() {
             currentUser = null;
-            allUsers = [];
-            clearInterval(notificationInterval);
-            
-            document.getElementById('loginPage').classList.remove('hidden');
-            document.getElementById('dashboard').classList.add('hidden');
-            
-            // Reset form
-            document.getElementById('phoneNumber').value = '';
-            document.getElementById('email').value = '';
-            document.getElementById('referralCode').value = '';
-            document.getElementById('password').value = '';
-            switchTab('phone');
-            
-            showNotification('Logged out successfully!', 'success');
+            localStorage.removeItem('multiConnectUser');
+            document.getElementById('dashboard').classList.remove('loaded');
+
+            setTimeout(() => {
+                document.getElementById('dashboard').classList.add('hidden');
+                document.getElementById('loginPage').classList.remove('hidden');
+
+                // Reset form
+                document.getElementById('phoneNumber').value = '';
+                document.getElementById('email').value = '';
+                document.getElementById('referralCode').value = '';
+                document.getElementById('password').value = '';
+                switchLoginTab('phone');
+
+                showNotification('Logged out successfully!', 'success');
+            }, 500);
         }
 
         function openModal(modalId) {
             document.getElementById(modalId).classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
 
         function closeModal(modalId) {
             document.getElementById(modalId).classList.remove('active');
+            document.body.style.overflow = 'auto';
         }
 
         function showNotification(message, type = 'success', containerId = 'notificationContainer') {
@@ -2629,14 +3762,22 @@ Don't miss out on this opportunity! ✨`;
                 <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
                 <span>${message}</span>
             `;
-            
+
             container.appendChild(notification);
-            
+
+            // Show notification
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10);
+
             // Auto-remove after 5 seconds
             setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.parentNode.removeChild(notification);
-                }
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
             }, 5000);
         }
 
@@ -2644,22 +3785,93 @@ Don't miss out on this opportunity! ✨`;
             const container = document.getElementById(containerId);
             if (container) {
                 container.innerHTML = '';
-                container.classList.add('hidden');
             }
         }
 
         function showLoading(message) {
             document.getElementById('loadingMessage').textContent = message;
             document.getElementById('loadingOverlay').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
         }
 
         function hideLoading() {
             document.getElementById('loadingOverlay').classList.add('hidden');
+            document.body.style.overflow = 'auto';
         }
 
         function formatCurrency(amount) {
             return `₹${parseFloat(amount || 0).toFixed(2)}`;
         }
+
+        function isValidEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function startCountdown() {
+            function updateTimer() {
+                const now = new Date();
+                const endOfDay = new Date(now);
+                endOfDay.setHours(23, 59, 59, 999);
+
+                const diff = endOfDay - now;
+
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                document.getElementById('countdownTimer').textContent =
+                    `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+
+            updateTimer();
+            setInterval(updateTimer, 1000);
+        }
+
+        function startDailyBonusTimer() {
+            function updateBonusTimer() {
+                const now = new Date();
+                const nextBonus = new Date(now);
+
+                // If bonus already claimed today, set next bonus to tomorrow
+                if (dailyBonusClaimed) {
+                    nextBonus.setDate(nextBonus.getDate() + 1);
+                    nextBonus.setHours(0, 0, 0, 0);
+                } else {
+                    // If not claimed, next bonus is at midnight
+                    nextBonus.setHours(23, 59, 59, 999);
+                }
+
+                const diff = nextBonus - now;
+
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                document.getElementById('dailyBonusTimer').textContent =
+                    `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+
+            updateBonusTimer();
+            setInterval(updateBonusTimer, 1000);
+        }
+
+        // Handle app visibility change
+        document.addEventListener('visibilitychange', function () {
+            if (!document.hidden && currentUser) {
+                // App became visible, check for updates
+                fetchSheetData().then(users => {
+                    if (currentUser) {
+                        const updatedUser = users.find(u => u.referralCode === currentUser.referralCode);
+                        if (updatedUser) {
+                            currentUser = updatedUser;
+                            updateDashboard(currentUser);
+                        }
+                    }
+                });
+            }
+        });
     </script>
 </body>
+
 </html>
