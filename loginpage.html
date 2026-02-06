@@ -2949,15 +2949,10 @@
                 `This is ${currentUser.name} from your MultiConnect team.\n` +
                 `Just checking in to see how you're doing with the earning program!\n\n` +
                 `Need any help or have questions?\n` +
-                 `login your account ! 💪`
-                
-                 ` 👉👉👉👉👉 Click here: https://earningsprogram777.github.io/time-pass/webpage `
-
-                 ` APP LINK: https://drive.google.com/file/d/166Tf0FczDsmZ3--Iddx1YMjmRnHYNr_7/view?usp=drivesdk`
-                
+                `login your account ! 💪\n\n` +
+                `👉👉👉👉👉 Click here: https://earningsprogram777.github.io/time-pass/webpage \n` +
+                ` APP LINK: https://drive.google.com/file/d/166Tf0FczDsmZ3--Iddx1YMjmRnHYNr_7/view?usp=drivesdk \n\n` +
                 `Let's grow together! 💪`
-                
-                
             );
             window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
         }
@@ -2978,7 +2973,7 @@
                 document.getElementById('dailyBonusProgress').style.width = '100%';
             } else {
                 dailyBonusClaimed = false;
-                const randomBonus = Math.floor(Math.random() * 9) + 2; // ₹2-₹10
+                const randomBonus = Math.floor(Math.random() * 1) + 2; // ₹2-₹10
                 document.getElementById('dailyBonusAmount').textContent = formatCurrency(randomBonus);
                 document.getElementById('dailyBonusProgress').style.width = '0%';
             }
@@ -3030,7 +3025,7 @@
 
             const bonusDisplay = document.getElementById('dailyBonusAmount');
             if (!dailyBonusClaimed) {
-                const randomBonus = Math.floor(Math.random() * 9) + 2;
+                const randomBonus = Math.floor(Math.random() * 1) + 2;
                 bonusDisplay.textContent = formatCurrency(randomBonus);
                 bonusDisplay.style.animation = 'pulse 2s infinite';
             } else {
