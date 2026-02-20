@@ -1411,6 +1411,27 @@
             color: white;
         }
 
+        /* Course Link Style */
+        .course-link {
+            color: var(--success);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .course-link:hover {
+            color: #34d399;
+            transform: translateX(5px);
+        }
+
+        .course-link i {
+            font-size: 14px;
+        }
+
         /* Notifications */
         .notification {
             position: fixed;
@@ -2165,8 +2186,10 @@
                         <div class="profile-detail-value" id="profileReferredBy">-</div>
                     </div>
                     <div class="profile-detail-item">
-                        <div class="profile-detail-label">Team Name</div>
-                        <div class="profile-detail-value" id="profileTeamName">-</div>
+                        <div class="profile-detail-label">View Course</div>
+                        <div class="profile-detail-value" id="profileViewCourse">
+                            <!-- Course link will be loaded dynamically from sheet column F -->
+                        </div>
                     </div>
                     <div class="profile-detail-item">
                         <div class="profile-detail-label">Total Team</div>
@@ -2668,7 +2691,7 @@
 
         async function fetchSheetData() {
             try {
-                showLoading('Fetching data from Google Sheets...');
+                showLoading('Fetching data from server...');
                 const response = await fetch(GOOGLE_SHEETS_URL);
                 const text = await response.text();
 
@@ -2687,7 +2710,7 @@
                         password: cells[2]?.v?.toString() || '',
                         referralCode: cells[3]?.v || '',
                         referredBy: cells[4]?.v || '',
-                        teamName: cells[5]?.v || '',
+                        courseLink: cells[5]?.v || '', // Column F (course link)
                         totalTeam: parseInt(cells[6]?.v) || 0,
                         bonuses: parseFloat(cells[7]?.v) || 0,
                         deposit: parseFloat(cells[8]?.v) || 0,
@@ -2949,9 +2972,9 @@
                 `This is ${currentUser.name} from your MultiConnect team.\n` +
                 `Just checking in to see how you're doing with the earning program!\n\n` +
                 `Need any help or have questions?\n` +
-                `login your account ! 💪\n\n` +
-                `👉👉👉👉👉 Click here: https://earningsprogram777.github.io/time-pass/webpage \n` +
-                ` APP LINK: https://drive.google.com/file/d/166Tf0FczDsmZ3--Iddx1YMjmRnHYNr_7/view?usp=drivesdk \n\n` +
+                `Login your account! 💪\n\n` +
+                `👉 Login here: https://multiconnect.shop \n` +
+                `📱 App Link: https://drive.google.com/file/d/166Tf0FczDsmZ3--Iddx1YMjmRnHYNr_7/view?usp=drivesdk \n\n` +
                 `Let's grow together! 💪`
             );
             window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
@@ -3036,61 +3059,36 @@
         function showReferralMessage() {
             if (!currentUser) return;
 
-            const referralMessage = `👋 Hi, I am ${currentUser.name},
+            const referralMessage = `👋 Hi, Welcome to Our Skill Sphere Code Hub!
 
-🎉 *Welcome to Our Earning Program!*
+Now you can learn new skills and earn money at the same time.
+💡 What You'll Get:
+🔹 Courses: HTML, CSS, JavaScript, Python & more
+🔹 Books: Money Management, Motivation, Psychology, Strategy, Ethical Hacking & more
 
----
-💼 *What We Offer:*
------------------------------
-🔹 Telecalling Jobs
-🔹 Promoting Adds
-🔹 Dynamic Daily Tasks
-🔹 *Flexible Work Hours (Work from Home!)*
-🔹 *No Prior Experience Needed*
+🔹 Personal dashboard to check earnings & team details
+💸 Refer & Earn in 3 Levels:
+🥇 Level 1 – ₹200-₹1000 per day
+🥈 Level 2 – ₹100-₹500 per day
+🥉 Level 3 – ₹50-₹300 per day
+🚀 Start referring and build your team to earn daily bonuses.
+🔐 Login and check your details here: multiconnect.shop
 
-Why Join Us? 🚀
------------------------------
-✅ *Immediate Earning Potential: Start Earning Today!*
-✅ *Skill Development:* Enhance your communication & data handling skills.
-✅ *Transparent Payouts:* Get paid reliably.
-✅ *Dedicated Support:* We're here to guide you.
-✅ *Daily Bonus:* Earn ₹2-₹10 every day!
+📲 Need help?
+Send a WhatsApp message: 9985943961
+✨ Learn. Refer. Earn. Grow!
 
-💸 *How You Can Earn:*
------------------------------
-1. Refer friends for direct earnings.
-2. Build a team for recurring bonus income.
-3. Earn extra bonuses based on your performance.
-4. Claim daily bonus every day!
+Free 100 for WhatsApp poster status 
 
-💰 *Referral Bonus Structure:*
------------------------------
-🥇 Level 1: *₹100 per referral*
-🥈 Level 2: *₹50 per referral*
-🥉 Level 3: *₹50 per referral*
+Referral Code: ${currentUser.referralCode}
 
-🔥 *EXCLUSIVE LIMITED-TIME OFFER!*
------------------------------------------
-Joining Fee: *₹299*, Earn in 3 levels
-💥 *NOW ONLY ₹0! (100% OFF - Limited Slots!) join 10 members earn ₹1000*
-
----
-🔗 *Ready to Start?*
-Join using your Referral Code: *${currentUser.referralCode}*
-👉👉👉👉👉 Click here: https://earningsprogram777.github.io/time-pass/webpage?ref=${currentUser.referralCode}
-
-📞 Let's grow together and earn daily! Join our WhatsApp Group for tips & updates:
-https://chat.whatsapp.com/E94BX4hBsFM4GpvQx5FBEW
-
-📱 WHATSAPP CHANNEL:
+📱 WhatsApp Channel:
 https://whatsapp.com/channel/0029VbC2lLdK0IBag1Y3WC0s
 
-*Special Offers:*
-1. Join 5 members in 1 week & get your money back! 💰
-2. Daily bonus of ₹2-₹10 every day! 🎁
+👥 WhatsApp Group:
+https://chat.whatsapp.com/E94BX4hBsFM4GpvQx5FBEW
 
-Don't miss out on this opportunity! ✨`;
+📞 Message me for more info!`;
 
             document.getElementById('referralMessagePreview').textContent = referralMessage;
             openModal('referralMessageModal');
@@ -3288,7 +3286,15 @@ Don't miss out on this opportunity! ✨`;
             // Referral Information
             document.getElementById('profileReferralCode').textContent = currentUser.referralCode || '-';
             document.getElementById('profileReferredBy').textContent = currentUser.referredBy || 'Direct';
-            document.getElementById('profileTeamName').textContent = currentUser.teamName || '-';
+            
+            // Course Link from sheet column F
+            const courseLinkElement = document.getElementById('profileViewCourse');
+            if (currentUser.courseLink) {
+                courseLinkElement.innerHTML = `<a href="${currentUser.courseLink}" class="course-link" target="_self"><i class="fas fa-play-circle"></i> Click to View Course</a>`;
+            } else {
+                courseLinkElement.innerHTML = `<span style="color: rgba(255,255,255,0.5);">No course available</span>`;
+            }
+            
             document.getElementById('profileTotalTeam').textContent = currentUser.totalTeam || 0;
 
             // Financial Information
@@ -3518,7 +3524,7 @@ Phone: ${currentUser.phone}
 Email: ${currentUser.email || 'N/A'}
 Referral Code: ${currentUser.referralCode}
 Referred By: ${currentUser.referredBy || 'Direct'}
-Team Name: ${currentUser.teamName || '-'}
+Course Link: ${currentUser.courseLink || 'N/A'}
 Payment Date: ${currentUser.paymentDate || '-'}
 
 Financial Summary:
@@ -3580,7 +3586,7 @@ Status: ${currentUser.status || 'Active'}
 -----------------------
 Referral Code: ${currentUser.referralCode}
 Referred By: ${currentUser.referredBy || 'Direct'}
-Team Name: ${currentUser.teamName || '-'}
+Course Link: ${currentUser.courseLink || 'Not available'}
 Total Team Members: ${currentUser.totalTeam}
 
 💰 FINANCIAL INFORMATION
